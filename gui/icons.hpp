@@ -194,7 +194,7 @@ public:
 
     IconInfo GetFullMapIcon(unsigned i) const
     {
-        auto index = i + mFullMapIconOffset;
+        const auto index = i + mFullMapIconOffset;
         ASSERT(index < mInventoryIconsDims.size());
         return std::make_tuple(
             mInventoryIconsSpriteSheet,
