@@ -1,3 +1,4 @@
+// This manages the world map shown before chapters.
 #pragma once
 
 #include "bak/coordinates.hpp"
@@ -226,8 +227,8 @@ private:
 
     Widget mPlayerLocation;
     std::vector<TownLabel> mTowns;
-    unsigned mPlayerPositionBaseIcon;
-    unsigned mPlayerPositionIconOffset;
+    unsigned mPlayerPositionBaseIcon{0};
+    unsigned mPlayerPositionIconOffset{0};
     int mPlayerPositionIconPulseDirection{1};
     TickAnimator* mPlayerPositionFlasher;
 
