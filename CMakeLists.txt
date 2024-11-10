@@ -3,6 +3,12 @@ message ("CMAKE VERSION: " "${CMAKE_VERSION}")
 
 project( BaKGL )
 
+# TODO: Next three lines was just to be able to set NDEBUG
+# I don't know if these 3 lines should be here or not really.
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    add_definitions(-DNDEBUG)
+endif()
+
 # Project wide CXX flags
 string(CONCAT CXX_IGNORES
     "-Wno-unknown-warning-option "

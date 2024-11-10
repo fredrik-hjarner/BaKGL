@@ -194,7 +194,22 @@ public:
 
     IconInfo GetFullMapIcon(unsigned i) const
     {
-        const auto index = i + mFullMapIconOffset;
+        auto index = i + mFullMapIconOffset;
+
+        // TODO: This is a temporary fix for the game crashing,
+        // If index is out of range, default to 0.
+        if (index >= mInventoryIconsDims.size()) {
+            mLogger.Debug("GetFullMapIcon called with i: " + std::to_string(i));
+            mLogger.Debug("Calculated index: " + std::to_string(index));
+            mLogger.Debug("mFullMapIconOffset: " + std::to_string(mFullMapIconOffset));
+            mLogger.Debug("mInventoryIconsDims.size(): " + std::to_string(mInventoryIconsDims.size()));
+            mLogger.Debug("GetFullMapIcon called with invalid index: " + std::to_string(index));
+            mLogger.Debug("Defaulting to the first valid index (0)");
+            index = 0; // Default to the first valid index
+        }
+
+        // TODO: This makes the game crash here on Ubuntu Desktop 24.04
+        // after having started a new game.
         ASSERT(index < mInventoryIconsDims.size());
         return std::make_tuple(
             mInventoryIconsSpriteSheet,

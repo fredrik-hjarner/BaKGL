@@ -5,8 +5,11 @@
   "version": "0.1.0",
   "scripts": {
     "clean": "rm -rf build && mkdir build",
+    "cmake": "cd build && cmake ..",
+    "cmake:release": "cd build && cmake -DCMAKE_BUILD_TYPE=Release ..",
+    "make": "cd build && make -j$(nproc)",
     // takes 1m55.524s to run
-    "build": "./build.sh",
+    "ninja": "./build.sh",
     "start": "cd build && ./main3d",
   },
   "devDependencies": {
