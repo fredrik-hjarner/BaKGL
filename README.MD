@@ -46,6 +46,19 @@ I use some features of C++23, so a more recent gcc or clang will be required to 
 ![GCC 13 Build Status](https://github.com/xavieran/BaKGL/actions/workflows/gcc.yml/badge.svg)
 ![Clang 17 Build Status](https://github.com/xavieran/BaKGL/actions/workflows/clang.yml/badge.svg)
 
+### Install dependencies on Ubuntu Desktop 24.04
+
+1. `sudo snap install cmake`
+2. `sudo apt install build-essential`
+3. `sudo apt install libgl1-mesa-dev`
+4. `sudo apt install freeglut3-dev`
+5. `sudo apt install libxrandr-dev`
+6. `sudo apt install libxinerama-dev`
+7. `sudo apt install libxcursor-dev`
+8. `sudo apt install libxi-dev`
+9. `sudo apt install libsdl2-dev`
+10. `sudo apt-get install ninja-build` (optional)
+
 ## Build
 ### Linux
 This project uses cmake. It can be built easily with

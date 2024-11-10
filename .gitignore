@@ -10,3 +10,4 @@ imgui.ini
 tags
 shaders/gen
 shaders/shader_binary_cache.hxx
+node_modules
