@@ -1,3 +1,4 @@
+// TODO: I assume this is the view where you see the 3d view on top and characters and buttons underneath.
 #pragma once
 
 #include "bak/coordinates.hpp"
@@ -33,14 +34,28 @@ class MainView : public Widget
 public:
     static constexpr auto sLayoutFile = "REQ_MAIN.DAT";
 
+    /**
+     * These seems to be constants for the buttons you can click on.
+     */
+    // TODO: Where are left and right buttons?
+    // Forward button
     static constexpr auto sForward = 2;
+    // Backward button
     static constexpr auto sBackward = 1;
+    // Button that toggles snap to road on and off.
     static constexpr auto sSnapToRoad = 4;
+    // Toggles the view between the 3d view and the map view.
+    // TODO: There are three different views aren't there? One of the is not implemented yet.
     static constexpr auto sFullMap = 5;
+    // Cast screen button
     static constexpr auto sCast = 6;
+    // Save button
     static constexpr auto sBookmark = 7;
+    // Camp button
     static constexpr auto sCamp = 8;
+    // Button that takes you back to the main menu.
     static constexpr auto sMainMenu = 9;
+    // TODO: What is this?
     static constexpr auto sCharacterWidgetBegin = 10;
 
     MainView(

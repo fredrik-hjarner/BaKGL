@@ -36,16 +36,52 @@ set(APP_LIBS
     imgui
 )
 
+# QuickJS setup
+set(QUICKJS_LIBS
+    quickjs
+    m
+    dl
+)
 
+# List of apps that need QuickJS
+set(QUICKJS_APPS
+    main3d
+)
+
+# Tell compiler to ignore warnings only for QuickJS header
+set_source_files_properties(${CMAKE_SOURCE_DIR}/quickjs/quickjs.hpp
+    PROPERTIES COMPILE_FLAGS "-w"
+)
+
+# Handle all binaries
 foreach (APP_BIN IN LISTS APP_BINARIES)
     add_executable (${APP_BIN} ${APP_BIN}.cpp)
     set_target_properties(${APP_BIN} PROPERTIES CMAKE_CXX_CLANG_TIDY "")
-    target_link_libraries(${APP_BIN}
-        ${LINK_UNIX_LIBRARIES}
-        ${LINK_3D_LIBRARIES}
-        #${SDL_LIBRARIES}
-        ${APP_LIBS}
-    )
+
+    # Only add QuickJS for apps that need it
+    if(${APP_BIN} IN_LIST QUICKJS_APPS)
+        target_include_directories(${APP_BIN} PRIVATE 
+            ${CMAKE_SOURCE_DIR}          # For quickjs/quickjs.hpp
+            ${CMAKE_SOURCE_DIR}/quickjs/build  # For quickjs.h
+        )
+        target_link_directories(${APP_BIN} PRIVATE ${CMAKE_SOURCE_DIR}/quickjs/build)
+        target_link_libraries(${APP_BIN}
+            ${LINK_UNIX_LIBRARIES}
+            ${LINK_3D_LIBRARIES}
+            #${SDL_LIBRARIES}
+            ${APP_LIBS}
+            ${QUICKJS_LIBS}
+            nlohmann_json::nlohmann_json
+        )
+    else()
+        target_link_libraries(${APP_BIN}
+            ${LINK_UNIX_LIBRARIES}
+            ${LINK_3D_LIBRARIES}
+            #${SDL_LIBRARIES}
+            ${APP_LIBS}
+            nlohmann_json::nlohmann_json
+        )
+    endif()
 endforeach()
 
 install(TARGETS main3d)

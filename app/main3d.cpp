@@ -10,7 +10,18 @@
 
 extern "C" {
 #include "com/getopt.h"
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wall"
+#pragma GCC diagnostic ignored "-Wextra"
+#pragma GCC diagnostic ignored "-Wpedantic"
+#pragma GCC diagnostic ignored "-Wcast-function-type"
+#include "quickjs/quickjs.hpp"
+#pragma GCC diagnostic pop
 }
+
+// include js_engine.hpp
+// TODO: organize/tidy this whole stuff.
+#include "js_engine.hpp"
 
 #include "com/logger.hpp"
 #include "com/path.hpp"
@@ -123,6 +134,18 @@ int main(int argc, char** argv)
     Logging::LogState::Disable("FMAP_TWN");
     Logging::LogState::Disable("FMAP");
     Logging::LogState::Disable("CampData");
+
+    // Add QuickJS test
+    {
+        JSEngine jsEngine;
+        double result = jsEngine.eval("double(2.2)");
+        logger.Info() << "JSEngine: double math 2.2*2: " << result << "\n";
+        double result2 = jsEngine.eval("add(20, 0.2)");
+        logger.Info() << "JSEngine: double math 20+0.2: " << result2 << "\n";
+        User user = jsEngine.evalReturnJSON<User>("getUser()");
+        logger.Info() << "JSEngine: User name: " << user.name << "\n";
+        logger.Info() << "JSEngine: User age: " << user.age << "\n";
+    }
 
 
     auto guiScalar = 4.0f;

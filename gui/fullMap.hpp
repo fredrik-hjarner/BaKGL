@@ -1,3 +1,4 @@
+// This manages the world map shown before chapters.
 #pragma once
 
 #include "bak/coordinates.hpp"
