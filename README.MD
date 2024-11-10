@@ -58,6 +58,7 @@ I use some features of C++23, so a more recent gcc or clang will be required to 
 8. `sudo apt install libxi-dev`
 9. `sudo apt install libsdl2-dev`
 10. `sudo apt-get install ninja-build` (optional)
+11. `sudo apt-get install cppcheck` (optional)
 
 ## Build
 ### Linux

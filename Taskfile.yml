@@ -2,10 +2,13 @@ version: '3'
 
 tasks:
   build:
-    cmd: bun run ninja
+    cmd: |
+      bun run ninja
+      echo "FINISHED COMPILATION!!!!"
     sources:
       - '**/*.h'
       - '**/*.hpp'
       - '**/*.c'
       - '**/*.cpp'
+      - build.sh
       - exclude: build/**/*
