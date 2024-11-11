@@ -10,6 +10,13 @@
 
 extern "C" {
 #include "com/getopt.h"
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
+#pragma GCC diagnostic ignored "-Wcast-function-type"
+#pragma GCC diagnostic ignored "-Wall"
+#pragma GCC diagnostic ignored "-Wextra"
+#include "quickjs.h"
+#pragma GCC diagnostic pop
 }
 
 #include "com/logger.hpp"

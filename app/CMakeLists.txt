@@ -36,17 +36,41 @@ set(APP_LIBS
     imgui
 )
 
+# Special handling for main3d since it needs QuickJS
+add_executable(main3d main3d.cpp)
+target_include_directories(main3d PRIVATE ${CMAKE_SOURCE_DIR}/lib)
+target_link_directories(main3d PRIVATE ${CMAKE_SOURCE_DIR}/lib)
+set_target_properties(main3d PROPERTIES 
+    CMAKE_CXX_CLANG_TIDY ""
+    COMPILE_FLAGS "-Wno-error")
+target_link_libraries(main3d
+    ${LINK_UNIX_LIBRARIES}
+    ${LINK_3D_LIBRARIES}
+    ${APP_LIBS}
+    quickjs m dl
+)
 
+# Handle all other binaries
 foreach (APP_BIN IN LISTS APP_BINARIES)
-    add_executable (${APP_BIN} ${APP_BIN}.cpp)
-    set_target_properties(${APP_BIN} PROPERTIES CMAKE_CXX_CLANG_TIDY "")
-    target_link_libraries(${APP_BIN}
-        ${LINK_UNIX_LIBRARIES}
-        ${LINK_3D_LIBRARIES}
-        #${SDL_LIBRARIES}
-        ${APP_LIBS}
-    )
+    if(NOT ${APP_BIN} STREQUAL "main3d")
+        add_executable (${APP_BIN} ${APP_BIN}.cpp)
+        set_target_properties(${APP_BIN} PROPERTIES CMAKE_CXX_CLANG_TIDY "")
+        target_link_libraries(${APP_BIN}
+            ${LINK_UNIX_LIBRARIES}
+            ${LINK_3D_LIBRARIES}
+            #${SDL_LIBRARIES}
+            ${APP_LIBS}
+        )
+    endif()
 endforeach()
+
+# Add QuickJS C++ test
+add_executable(quickjs_cpp_test quickjs_cpp_test.cpp)
+target_include_directories(quickjs_cpp_test PRIVATE ${CMAKE_SOURCE_DIR}/lib)
+target_link_directories(quickjs_cpp_test PRIVATE ${CMAKE_SOURCE_DIR}/lib)
+set_target_properties(quickjs_cpp_test PROPERTIES
+    COMPILE_FLAGS "-Wno-error")
+target_link_libraries(quickjs_cpp_test PRIVATE quickjs m dl)
 
 install(TARGETS main3d)
 
