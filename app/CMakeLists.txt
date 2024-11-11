@@ -64,14 +64,6 @@ foreach (APP_BIN IN LISTS APP_BINARIES)
     endif()
 endforeach()
 
-# Add QuickJS C++ test
-add_executable(quickjs_cpp_test quickjs_cpp_test.cpp)
-target_include_directories(quickjs_cpp_test PRIVATE ${CMAKE_SOURCE_DIR}/lib)
-target_link_directories(quickjs_cpp_test PRIVATE ${CMAKE_SOURCE_DIR}/lib)
-set_target_properties(quickjs_cpp_test PROPERTIES
-    COMPILE_FLAGS "-Wno-error")
-target_link_libraries(quickjs_cpp_test PRIVATE quickjs m dl)
-
 install(TARGETS main3d)
 
 
