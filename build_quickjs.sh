@@ -1,26 +1,45 @@
 #!/bin/bash
 
-# Create a directory for QuickJS
-mkdir -p external/quickjs
-cd external/quickjs
+# QuickJS version to use (specific commit hash for stability)
+QUICKJS_VERSION="6e2e68fd0896957f92eb6c242a2e048c1ef3cae0"
+
+# Create QuickJS directory structure
+mkdir -p quickjs/{src,build}
 
 # Clone QuickJS if not already present
-if [ ! -d "quickjs" ]; then
+if [ ! -d "quickjs/src/quickjs" ]; then
+    cd quickjs/src
     git clone https://github.com/bellard/quickjs.git
+    cd quickjs
+    git checkout ${QUICKJS_VERSION}
+    cd ../../..
 fi
 
-cd quickjs
-
 # Build QuickJS
+cd quickjs/src/quickjs
 make clean
 make -j$(nproc)
 
-# Create lib directory in project root if it doesn't exist
-mkdir -p ../../../lib
+# Copy the built library and headers to our build directory
+mkdir -p ../../build
+cp libquickjs.a ../../build/
+cp quickjs.h ../../build/
+cp quickjs-libc.h ../../build/
 
-# Copy the built library and headers to our project structure
-cp libquickjs.a ../../../lib/
-cp quickjs.h ../../../lib/
-cp quickjs-libc.h ../../../lib/
+# Create our C++ header wrapper
+cat > ../../quickjs.hpp << 'EOL'
+#pragma once
 
-echo "QuickJS built and installed to lib/ directory" 
+// Disable ALL warnings for QuickJS includes
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wall"
+#pragma GCC diagnostic ignored "-Wextra"
+#pragma GCC diagnostic ignored "-Wpedantic"
+#pragma GCC diagnostic ignored "-Wcast-function-type"
+extern "C" {
+#include "quickjs/build/quickjs.h"
+}
+#pragma GCC diagnostic pop
+EOL
+
+echo "QuickJS built and installed to quickjs/build directory" 

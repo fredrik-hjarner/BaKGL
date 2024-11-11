@@ -36,25 +36,43 @@ set(APP_LIBS
     imgui
 )
 
-# Special handling for main3d since it needs QuickJS
-add_executable(main3d main3d.cpp)
-target_include_directories(main3d PRIVATE ${CMAKE_SOURCE_DIR}/lib)
-target_link_directories(main3d PRIVATE ${CMAKE_SOURCE_DIR}/lib)
-set_target_properties(main3d PROPERTIES 
-    CMAKE_CXX_CLANG_TIDY ""
-    COMPILE_FLAGS "-Wno-error")
-target_link_libraries(main3d
-    ${LINK_UNIX_LIBRARIES}
-    ${LINK_3D_LIBRARIES}
-    ${APP_LIBS}
-    quickjs m dl
+# QuickJS setup
+set(QUICKJS_LIBS
+    quickjs
+    m
+    dl
 )
 
-# Handle all other binaries
+# List of apps that need QuickJS
+set(QUICKJS_APPS
+    main3d
+)
+
+# Tell compiler to ignore warnings only for QuickJS header
+set_source_files_properties(${CMAKE_SOURCE_DIR}/quickjs/quickjs.hpp
+    PROPERTIES COMPILE_FLAGS "-w"
+)
+
+# Handle all binaries
 foreach (APP_BIN IN LISTS APP_BINARIES)
-    if(NOT ${APP_BIN} STREQUAL "main3d")
-        add_executable (${APP_BIN} ${APP_BIN}.cpp)
-        set_target_properties(${APP_BIN} PROPERTIES CMAKE_CXX_CLANG_TIDY "")
+    add_executable (${APP_BIN} ${APP_BIN}.cpp)
+    set_target_properties(${APP_BIN} PROPERTIES CMAKE_CXX_CLANG_TIDY "")
+
+    # Only add QuickJS for apps that need it
+    if(${APP_BIN} IN_LIST QUICKJS_APPS)
+        target_include_directories(${APP_BIN} PRIVATE 
+            ${CMAKE_SOURCE_DIR}          # For quickjs/quickjs.hpp
+            ${CMAKE_SOURCE_DIR}/quickjs/build  # For quickjs.h
+        )
+        target_link_directories(${APP_BIN} PRIVATE ${CMAKE_SOURCE_DIR}/quickjs/build)
+        target_link_libraries(${APP_BIN}
+            ${LINK_UNIX_LIBRARIES}
+            ${LINK_3D_LIBRARIES}
+            #${SDL_LIBRARIES}
+            ${APP_LIBS}
+            ${QUICKJS_LIBS}
+        )
+    else()
         target_link_libraries(${APP_BIN}
             ${LINK_UNIX_LIBRARIES}
             ${LINK_3D_LIBRARIES}
