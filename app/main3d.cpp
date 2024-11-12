@@ -137,8 +137,10 @@ int main(int argc, char** argv)
 
     {
         JSEngine jsEngine;
-        int32_t result = jsEngine.call_function("double", 2);
+        int32_t result = jsEngine.call_int_int("double", 2);
+        int32_t result2 = jsEngine.call_int2_int("add", 20, 20);
         logger.Info() << "JSEngine: double: " << result << "\n";
+        logger.Info() << "JSEngine: double2: " << result2 << "\n";
     }
 
     // Add QuickJS test

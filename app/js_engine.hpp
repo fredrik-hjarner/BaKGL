@@ -55,31 +55,6 @@ public:
         JS_FreeRuntime(rt);
     }
 
-    // TODO: Remove this function, just for testing.
-    //  Though I'll probably want some util(s) to call js functions or grab global functions.
-    int32_t call_function(const char* function_name, int arg) {
-        // Get the function from global scope
-        JSValue global = JS_GetGlobalObject(ctx);
-        JSValue fn = JS_GetPropertyStr(ctx, global, function_name);
-        
-        if (!JS_IsFunction(ctx, fn)) {
-            JS_FreeValue(ctx, fn);
-            JS_FreeValue(ctx, global);
-            throw std::runtime_error("Function not found");
-        }
-        // Call it
-        JSValue arg_val = JS_NewInt32(ctx, arg);
-        JSValue ret = JS_Call(ctx, fn, global, 1, &arg_val);
-        int32_t result;
-        JS_ToInt32(ctx, &result, ret);
-        
-        // Cleanup
-        JS_FreeValue(ctx, arg_val);
-        JS_FreeValue(ctx, fn);
-        JS_FreeValue(ctx, global);
-        return result;
-    }
-
     // first int is arg type, second is return type
     int32_t call_int_int(const char* function_name, int32_t arg) {
         // Get the function from global scope
@@ -105,31 +80,37 @@ public:
     }
 
     // int2 means arguments are two ints, second arg is return type
-    // int32_t call_int2_int(const char* function_name, int32_t arg1, int32_t arg2) {
-    //     // Get the function from global scope
-    //     JSValue global = JS_GetGlobalObject(ctx);
-    //     JSValue fn = JS_GetPropertyStr(ctx, global, function_name);
+    int32_t call_int2_int(const char* function_name, int32_t arg1, int32_t arg2) {
+        // Get the function from global scope
+        JSValue global = JS_GetGlobalObject(ctx);
+        JSValue fn = JS_GetPropertyStr(ctx, global, function_name);
         
-    //     if (!JS_IsFunction(ctx, fn)) {
-    //         JS_FreeValue(ctx, fn);
-    //         JS_FreeValue(ctx, global);
-    //         throw std::runtime_error("Function not found");
-    //     }
-    //     // Call it
-    //     JSValue arg_val1 = JS_NewInt32(ctx, arg1);
-    //     JSValue arg_val2 = JS_NewInt32(ctx, arg2);
-    //     // TODO: No, should no argument to JS_Call should be ONE JSValue *argv.
-    //     JSValue ret = JS_Call(ctx, fn, global, 2, &arg_val1, &arg_val2);
-    //     int32_t result;
-    //     JS_ToInt32(ctx, &result, ret);
+        if (!JS_IsFunction(ctx, fn)) {
+            JS_FreeValue(ctx, fn);
+            JS_FreeValue(ctx, global);
+            throw std::runtime_error("Function not found");
+        }
+
+        // Create array of arguments
+        JSValue args[2];
+        args[0] = JS_NewInt32(ctx, arg1);
+        args[1] = JS_NewInt32(ctx, arg2);
         
-    //     // Cleanup
-    //     JS_FreeValue(ctx, arg_val1);
-    //     JS_FreeValue(ctx, arg_val2);
-    //     JS_FreeValue(ctx, fn);
-    //     JS_FreeValue(ctx, global);
-    //     return result;
-    // }
+        // Call the function with both arguments
+        JSValue ret = JS_Call(ctx, fn, global, 2, args);
+        
+        int32_t result;
+        JS_ToInt32(ctx, &result, ret);
+        
+        // Cleanup
+        JS_FreeValue(ctx, args[0]);
+        JS_FreeValue(ctx, args[1]);
+        JS_FreeValue(ctx, ret);
+        JS_FreeValue(ctx, fn);
+        JS_FreeValue(ctx, global);
+        
+        return result;
+    }
 
     // Function that takes in any c++ function that takes the global object as an argument and returns a JSValue.
     // template<typename Func>

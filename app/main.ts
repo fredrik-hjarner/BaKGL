@@ -8,3 +8,7 @@
 globalThis.double = function(x: number) {
     return x * 2;
 }
+
+globalThis.add = function(x: number, y: number) {
+    return x + y;
+}
