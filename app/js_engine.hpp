@@ -13,7 +13,6 @@ private:
     JSContext* ctx;
     // All js is loaded into this JSValue. To get functions out of it
     // you can grab globals (on globalThis). Dunno if exports can be grabbed too...?
-    JSValue loaded_module; // Store the evaluated module
 
     std::string build_typescript() {
         // TODO: Should read some main.ts or index.ts file or something in some folder somewhere.
@@ -38,120 +37,39 @@ public:
         if (!rt || !ctx) throw std::runtime_error("JS init failed");
         // Load TypeScript code at startup
         std::string js_code = build_typescript();
-        loaded_module = JS_Eval(ctx, 
+        JSValue loaded_module = JS_Eval(ctx, 
                               js_code.c_str(), 
                               js_code.length(),
                               "", 
-                              JS_EVAL_TYPE_MODULE);
+                              JS_EVAL_TYPE_GLOBAL);
         
         if (JS_IsException(loaded_module)) {
             throw std::runtime_error("Failed to evaluate JS code");
         }
+        JS_FreeValue(ctx, loaded_module);
     }
 
     ~JSEngine() {
-        JS_FreeValue(ctx, loaded_module);
         JS_FreeContext(ctx);
         JS_FreeRuntime(rt);
     }
 
-    // first int is arg type, second is return type
-    int32_t call_int_int(const char* function_name, int32_t arg) {
-        // Get the function from global scope
-        JSValue global = JS_GetGlobalObject(ctx);
-        JSValue fn = JS_GetPropertyStr(ctx, global, function_name);
+    double eval(const char* expr) {
+        JSValue result = JS_Eval(ctx,
+                                expr,
+                                strlen(expr),
+                                "<eval>",
+                                JS_EVAL_TYPE_GLOBAL);
         
-        if (!JS_IsFunction(ctx, fn)) {
-            JS_FreeValue(ctx, fn);
-            JS_FreeValue(ctx, global);
-            throw std::runtime_error("Function not found");
+        if (JS_IsException(result)) {
+            JS_FreeValue(ctx, result);
+            throw std::runtime_error("Failed to execute function");
         }
-        // Call it
-        JSValue arg_val = JS_NewInt32(ctx, arg);
-        JSValue ret = JS_Call(ctx, fn, global, 1, &arg_val);
-        int32_t result;
-        JS_ToInt32(ctx, &result, ret);
         
-        // Cleanup
-        JS_FreeValue(ctx, arg_val);
-        JS_FreeValue(ctx, fn);
-        JS_FreeValue(ctx, global);
-        return result;
+        double cpp_result;
+        JS_ToFloat64(ctx, &cpp_result, result);
+        JS_FreeValue(ctx, result);
+        
+        return cpp_result;
     }
-
-    // int2 means arguments are two ints, second arg is return type
-    int32_t call_int2_int(const char* function_name, int32_t arg1, int32_t arg2) {
-        // Get the function from global scope
-        JSValue global = JS_GetGlobalObject(ctx);
-        JSValue fn = JS_GetPropertyStr(ctx, global, function_name);
-        
-        if (!JS_IsFunction(ctx, fn)) {
-            JS_FreeValue(ctx, fn);
-            JS_FreeValue(ctx, global);
-            throw std::runtime_error("Function not found");
-        }
-
-        // Create array of arguments
-        JSValue args[2];
-        args[0] = JS_NewInt32(ctx, arg1);
-        args[1] = JS_NewInt32(ctx, arg2);
-        
-        // Call the function with both arguments
-        JSValue ret = JS_Call(ctx, fn, global, 2, args);
-        
-        int32_t result;
-        JS_ToInt32(ctx, &result, ret);
-        
-        // Cleanup
-        JS_FreeValue(ctx, args[0]);
-        JS_FreeValue(ctx, args[1]);
-        JS_FreeValue(ctx, ret);
-        JS_FreeValue(ctx, fn);
-        JS_FreeValue(ctx, global);
-        
-        return result;
-    }
-
-    // double means arguments is one double, return type is double
-    double call_double_double(const char* function_name, double arg) {
-        // Get the function from global scope
-        JSValue global = JS_GetGlobalObject(ctx);
-        JSValue fn = JS_GetPropertyStr(ctx, global, function_name);
-        
-        if (!JS_IsFunction(ctx, fn)) {
-            JS_FreeValue(ctx, fn);
-            JS_FreeValue(ctx, global);
-            throw std::runtime_error("Function not found");
-        }
-        // Call it
-        JSValue arg_val = JS_NewFloat64(ctx, arg);
-        JSValue ret = JS_Call(ctx, fn, global, 1, &arg_val);
-        double result;
-        JS_ToFloat64(ctx, &result, ret);
-        
-        // Cleanup
-        JS_FreeValue(ctx, arg_val);
-        JS_FreeValue(ctx, fn);
-        JS_FreeValue(ctx, global);
-        return result;
-    }
-
-    // Function that takes in any c++ function that takes the global object as an argument and returns a JSValue.
-    // template<typename Func>
-    // auto with_function(const char* function_name, Func func) {
-    //     // Get the function from global scope
-    //     JSValue global = JS_GetGlobalObject(ctx);
-    //     JSValue fn = JS_GetPropertyStr(ctx, global, function_name);
-    //     if (!JS_IsFunction(ctx, fn)) {
-    //         JS_FreeValue(ctx, fn);
-    //         JS_FreeValue(ctx, global);
-    //         throw std::runtime_error("Function not found");
-    //     }
-    //     // Call it with the given function
-    //     auto ret = func(fn);
-        
-    //     JS_FreeValue(ctx, fn);
-    //     JS_FreeValue(ctx, global);
-    //     return ret;
-    // }
 };

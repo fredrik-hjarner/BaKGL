@@ -135,47 +135,15 @@ int main(int argc, char** argv)
     Logging::LogState::Disable("FMAP");
     Logging::LogState::Disable("CampData");
 
-    {
-        JSEngine jsEngine;
-        int32_t result = jsEngine.call_int_int("double", 2);
-        int32_t result2 = jsEngine.call_int2_int("add", 20, 20);
-        double result3 = jsEngine.call_double_double("double", 2.2);
-        logger.Info() << "JSEngine: int math 2*2: " << result << "\n";
-        logger.Info() << "JSEngine: int math 20+20: " << result2 << "\n";
-        logger.Info() << "JSEngine: double math 2.2*2: " << result3 << "\n";
-    }
-
     // Add QuickJS test
     {
-        JSRuntime *rt = JS_NewRuntime();
-        if (!rt) {
-            logger.Error() << "Failed to create JS runtime\n";
-            return 1;
-        }
-
-        JSContext *ctx = JS_NewContext(rt);
-        if (!ctx) {
-            logger.Error() << "Failed to create JS context\n";
-            JS_FreeRuntime(rt);
-            return 1;
-        }
-
-        // Try to evaluate a simple JS expression
-        const char *expr = "let x = 40; x + 2";
-        JSValue val = JS_Eval(ctx, expr, strlen(expr), "<input>", JS_EVAL_TYPE_GLOBAL);
-        
-        if (JS_IsException(val)) {
-            logger.Error() << "JS evaluation failed\n";
-        } else {
-            int32_t result;
-            JS_ToInt32(ctx, &result, val);
-            logger.Info() << "QuickJS Test Result: " << result << "\n";
-        }
-
-        JS_FreeValue(ctx, val);
-        JS_FreeContext(ctx);
-        JS_FreeRuntime(rt);
+        JSEngine jsEngine;
+        double result = jsEngine.eval("double(2.2)");
+        logger.Info() << "JSEngine: double math 2.2*2: " << result << "\n";
+        double result2 = jsEngine.eval("add(20, 0.2)");
+        logger.Info() << "JSEngine: double math 20+0.2: " << result2 << "\n";
     }
+
 
     auto guiScalar = 4.0f;
 

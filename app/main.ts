@@ -1,14 +1,13 @@
-// Extend the globalThis interface to include the double function
-// declare global {
-//     interface Global {
-//         double: (x: number) => number;
-//     }
-// }
 
-globalThis.double = function(x: number) {
+function double(x: number) {
     return x * 2;
 }
 
-globalThis.add = function(x: number, y: number) {
+function add(x: number, y: number) {
     return x + y;
 }
+
+// @ts-expect-error
+globalThis.double = double;
+// @ts-expect-error
+globalThis.add = add;
