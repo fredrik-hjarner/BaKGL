@@ -112,6 +112,30 @@ public:
         return result;
     }
 
+    // double means arguments is one double, return type is double
+    double call_double_double(const char* function_name, double arg) {
+        // Get the function from global scope
+        JSValue global = JS_GetGlobalObject(ctx);
+        JSValue fn = JS_GetPropertyStr(ctx, global, function_name);
+        
+        if (!JS_IsFunction(ctx, fn)) {
+            JS_FreeValue(ctx, fn);
+            JS_FreeValue(ctx, global);
+            throw std::runtime_error("Function not found");
+        }
+        // Call it
+        JSValue arg_val = JS_NewFloat64(ctx, arg);
+        JSValue ret = JS_Call(ctx, fn, global, 1, &arg_val);
+        double result;
+        JS_ToFloat64(ctx, &result, ret);
+        
+        // Cleanup
+        JS_FreeValue(ctx, arg_val);
+        JS_FreeValue(ctx, fn);
+        JS_FreeValue(ctx, global);
+        return result;
+    }
+
     // Function that takes in any c++ function that takes the global object as an argument and returns a JSValue.
     // template<typename Func>
     // auto with_function(const char* function_name, Func func) {
