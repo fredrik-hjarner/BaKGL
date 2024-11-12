@@ -19,6 +19,10 @@ extern "C" {
 #pragma GCC diagnostic pop
 }
 
+// include js_engine.hpp
+// TODO: organize/tidy this whole stuff.
+#include "js_engine.hpp"
+
 #include "com/logger.hpp"
 #include "com/path.hpp"
 #include "com/visit.hpp"
@@ -130,6 +134,12 @@ int main(int argc, char** argv)
     Logging::LogState::Disable("FMAP_TWN");
     Logging::LogState::Disable("FMAP");
     Logging::LogState::Disable("CampData");
+
+    {
+        JSEngine jsEngine;
+        int32_t result = jsEngine.call_function("double", 2);
+        logger.Info() << "JSEngine: double: " << result << "\n";
+    }
 
     // Add QuickJS test
     {
