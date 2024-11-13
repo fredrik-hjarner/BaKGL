@@ -6,8 +6,9 @@
                 "${workspaceFolder}/**",
                 // "/usr/include",
                 // "/usr/local/include",
-                "${workspaceFolder}/build/**/*"
+                "${workspaceFolder}/build/**/*",
                 // "${workspaceFolder}/build/_deps/glfw-src/include/*"
+                "${workspaceFolder}/build/_deps/json-src/include"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang-18",

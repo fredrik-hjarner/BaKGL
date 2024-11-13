@@ -71,6 +71,7 @@ foreach (APP_BIN IN LISTS APP_BINARIES)
             #${SDL_LIBRARIES}
             ${APP_LIBS}
             ${QUICKJS_LIBS}
+            nlohmann_json::nlohmann_json
         )
     else()
         target_link_libraries(${APP_BIN}
@@ -78,6 +79,7 @@ foreach (APP_BIN IN LISTS APP_BINARIES)
             ${LINK_3D_LIBRARIES}
             #${SDL_LIBRARIES}
             ${APP_LIBS}
+            nlohmann_json::nlohmann_json
         )
     endif()
 endforeach()

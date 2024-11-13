@@ -142,6 +142,9 @@ int main(int argc, char** argv)
         logger.Info() << "JSEngine: double math 2.2*2: " << result << "\n";
         double result2 = jsEngine.eval("add(20, 0.2)");
         logger.Info() << "JSEngine: double math 20+0.2: " << result2 << "\n";
+        User user = jsEngine.evalReturnJSON<User>("getUser()");
+        logger.Info() << "JSEngine: User name: " << user.name << "\n";
+        logger.Info() << "JSEngine: User age: " << user.age << "\n";
     }
 
 

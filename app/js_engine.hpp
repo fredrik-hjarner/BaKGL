@@ -6,6 +6,21 @@
 #include <functional>
 #include "quickjs/quickjs.hpp"
 #include "com/logger.hpp"
+#include "nlohmann/json.hpp"
+
+using json = nlohmann::json;
+
+struct User {
+    std::string name;
+    int age;
+    
+    static User from_json(const json& j) {
+        User user;
+        user.name = j["name"];
+        user.age = j["age"];
+        return user;
+    }
+};
 
 class JSEngine {
 private:
@@ -68,6 +83,33 @@ public:
         
         double cpp_result;
         JS_ToFloat64(ctx, &cpp_result, result);
+        JS_FreeValue(ctx, result);
+        
+        return cpp_result;
+    }
+
+    // Generic version
+    template<typename T>
+    T evalReturnJSON(const char* expr) {
+        JSValue result = JS_Eval(ctx, expr, strlen(expr), "<eval>", JS_EVAL_TYPE_GLOBAL);
+        if (JS_IsException(result)) {
+            JS_FreeValue(ctx, result);
+            throw std::runtime_error("Failed to execute function");
+        }
+
+        const char* json_str = JS_ToCString(ctx, result);
+        auto logger = Logging::LogState::GetLogger("JSEngine");
+        logger.Info() << "JSEngine: json_str: " << json_str << "\n";
+        if (!json_str) {
+            JS_FreeValue(ctx, result);
+            throw std::runtime_error("Failed to convert result to string");
+        }
+
+        // Parse JSON and convert to type T
+        auto json_obj = nlohmann::json::parse(json_str);
+        T cpp_result = T::from_json(json_obj);  // Using generated conversion
+
+        JS_FreeCString(ctx, json_str);
         JS_FreeValue(ctx, result);
         
         return cpp_result;
