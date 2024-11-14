@@ -30,7 +30,7 @@ private:
     // you can grab globals (on globalThis). Dunno if exports can be grabbed too...?
 
     std::string build_typescript() {
-        const char* cmd = "bun build ../app/main.ts";
+        const char* cmd = "bun build ../com/js_engine.ts";
         FILE* pipe = popen(cmd, "r");
         if (!pipe) throw std::runtime_error("Failed to run: " + std::string(cmd));
         

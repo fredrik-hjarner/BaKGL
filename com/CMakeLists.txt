@@ -9,6 +9,7 @@ add_library(com
     visit.hpp
     ostream.hpp
     ostreamMux.hpp ostreamMux.cpp
+    js_engine.hpp
 )
 
 if (ENABLE_CPPTRACE)

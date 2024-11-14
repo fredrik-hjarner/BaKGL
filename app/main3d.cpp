@@ -21,8 +21,7 @@ extern "C" {
 
 // include js_engine.hpp
 // TODO: organize/tidy this whole stuff.
-#include "js_engine.hpp"
-
+#include "com/js_engine.hpp"
 #include "com/logger.hpp"
 #include "com/path.hpp"
 #include "com/visit.hpp"
