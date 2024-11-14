@@ -102,7 +102,7 @@ public:
     }
 
     template<typename T>
-    T evalReturnPrimitive(const char* expr) {
+    T eval(const char* expr) {
         JSValue result = JS_Eval(ctx, expr, strlen(expr), "<eval>", JS_EVAL_TYPE_GLOBAL);
         if (JS_IsException(result)) {
             JSValue exception = JS_GetException(ctx);
@@ -115,7 +115,7 @@ public:
         }
 
         T cpp_result;
-        
+
         if constexpr (std::is_same_v<T, int32_t>) {
             JS_ToInt32(ctx, &cpp_result, result);
         }
@@ -133,36 +133,20 @@ public:
             cpp_result = str;
             JS_FreeCString(ctx, str);
         } else {
-            throw std::runtime_error("Unsupported primitive type");
+            // Must be JsonConvertible
+            std::string jsonStr = getJsonStringFromJsObject(ctx, result);
+            auto logger = Logging::LogState::GetLogger("JSEngine");
+            logger.Info() << "JSEngine: jsonStr: " << jsonStr << "\n";
+            if (jsonStr.empty()) {
+                JS_FreeValue(ctx, result);
+                throw std::runtime_error("Failed to convert result to string");
+            }
+
+            auto json_obj = nlohmann::json::parse(jsonStr);
+            cpp_result = T::from_json(json_obj);
         }
 
         JS_FreeValue(ctx, result);
-
-        return cpp_result;
-    }
-
-    template<typename T>
-    T evalReturnJSON(const char* expr) {
-        JSValue result = JS_Eval(ctx, expr, strlen(expr), "<eval>", JS_EVAL_TYPE_GLOBAL);
-        if (JS_IsException(result)) {
-            JS_FreeValue(ctx, result);
-            throw std::runtime_error("Failed to execute function");
-        }
-
-        std::string jsonStr = getJsonStringFromJsObject(ctx, result);
-        auto logger = Logging::LogState::GetLogger("JSEngine");
-        logger.Info() << "JSEngine: jsonStr: " << jsonStr << "\n";
-        if (jsonStr.empty()) {
-            JS_FreeValue(ctx, result);
-            throw std::runtime_error("Failed to convert result to string");
-        }
-
-        // Parse JSON and convert to type T
-        auto json_obj = nlohmann::json::parse(jsonStr);
-        T cpp_result = T::from_json(json_obj);  // Using generated conversion
-
-        JS_FreeValue(ctx, result);
-
         return cpp_result;
     }
 };
