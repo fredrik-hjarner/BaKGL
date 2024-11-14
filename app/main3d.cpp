@@ -138,9 +138,9 @@ int main(int argc, char** argv)
     // Add QuickJS test
     {
         JSEngine jsEngine;
-        double result = jsEngine.eval("double(2.2)");
+        double result = jsEngine.evalReturnPrimitive<double>("double(2.2)");
         logger.Info() << "JSEngine: double math 2.2*2: " << result << "\n";
-        double result2 = jsEngine.eval("add(20, 0.2)");
+        double result2 = jsEngine.evalReturnPrimitive<double>("add(20, 0.2)");
         logger.Info() << "JSEngine: double math 20+0.2: " << result2 << "\n";
         User user = jsEngine.evalReturnJSON<User>("getUser()");
         logger.Info() << "JSEngine: User name: " << user.name << "\n";

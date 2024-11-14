@@ -7,7 +7,6 @@
     "clean": "rm -rf build && mkdir build",
     "lint": "cppcheck -i build -i imgui ./**/* --inconclusive --enable=warning 2>&1 >/dev/null | grep unin",
     "cmake": "cd build && cmake ..",
-    "cmake:release": "cd build && cmake -DCMAKE_BUILD_TYPE=Release ..",
     "make": "cd build && make -j$(nproc)",
     // takes 1m55.524s to run
     "ninja": "./build.sh",

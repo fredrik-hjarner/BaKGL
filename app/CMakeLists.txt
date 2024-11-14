@@ -37,6 +37,7 @@ set(APP_LIBS
 )
 
 # QuickJS setup
+# might be able to m and dl they seem to be in LINK_UNIX_LIBRARIES already?
 set(QUICKJS_LIBS
     quickjs
     m

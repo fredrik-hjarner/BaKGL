@@ -30,18 +30,23 @@ private:
     // you can grab globals (on globalThis). Dunno if exports can be grabbed too...?
 
     std::string build_typescript() {
-        // TODO: Should read some main.ts or index.ts file or something in some folder somewhere.
-        FILE* pipe = popen("bun build ../app/main.ts", "r");
-        if (!pipe) throw std::runtime_error("Failed to run bun build");
+        const char* cmd = "bun build ../app/main.ts";
+        FILE* pipe = popen(cmd, "r");
+        if (!pipe) throw std::runtime_error("Failed to run: " + std::string(cmd));
         
         std::string result;
         char buffer[128];
         while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
             result += buffer;
         }
-        pclose(pipe);
+        
+        int status = pclose(pipe);
+        if (status != 0) {
+            throw std::runtime_error("bun build failed with status: " + std::to_string(status));
+        }
         auto logger = Logging::LogState::GetLogger("JSEngine");
         logger.Info() << "JSEngine: build_typescript: " << result << "\n";
+        
         return result;
     }
 
@@ -69,26 +74,46 @@ public:
         JS_FreeRuntime(rt);
     }
 
-    double eval(const char* expr) {
-        JSValue result = JS_Eval(ctx,
-                                expr,
-                                strlen(expr),
-                                "<eval>",
-                                JS_EVAL_TYPE_GLOBAL);
-        
+    template<typename T>
+    T evalReturnPrimitive(const char* expr) {
+        JSValue result = JS_Eval(ctx, expr, strlen(expr), "<eval>", JS_EVAL_TYPE_GLOBAL);
         if (JS_IsException(result)) {
+            JSValue exception = JS_GetException(ctx);
+            const char* str = JS_ToCString(ctx, exception);
+            std::string error_msg = str ? str : "Unknown error";
+            JS_FreeCString(ctx, str);
+            JS_FreeValue(ctx, exception);
             JS_FreeValue(ctx, result);
-            throw std::runtime_error("Failed to execute function");
+            throw std::runtime_error("JS error: " + error_msg);
         }
+
+        T cpp_result;
         
-        double cpp_result;
-        JS_ToFloat64(ctx, &cpp_result, result);
+        if constexpr (std::is_same_v<T, int32_t>) {
+            JS_ToInt32(ctx, &cpp_result, result);
+        }
+        else if constexpr (std::is_same_v<T, int64_t>) {
+            JS_ToInt64(ctx, &cpp_result, result);
+        }
+        else if constexpr (std::is_same_v<T, double>) {
+            JS_ToFloat64(ctx, &cpp_result, result);
+        }
+        else if constexpr (std::is_same_v<T, bool>) {
+            cpp_result = JS_ToBool(ctx, result);
+        }
+        else if constexpr (std::is_same_v<T, std::string>) {
+            const char* str = JS_ToCString(ctx, result);
+            cpp_result = str;
+            JS_FreeCString(ctx, str);
+        } else {
+            throw std::runtime_error("Unsupported primitive type");
+        }
+
         JS_FreeValue(ctx, result);
-        
+
         return cpp_result;
     }
 
-    // Generic version
     template<typename T>
     T evalReturnJSON(const char* expr) {
         JSValue result = JS_Eval(ctx, expr, strlen(expr), "<eval>", JS_EVAL_TYPE_GLOBAL);
@@ -111,7 +136,7 @@ public:
 
         JS_FreeCString(ctx, json_str);
         JS_FreeValue(ctx, result);
-        
+
         return cpp_result;
     }
 };
