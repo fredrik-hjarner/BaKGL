@@ -1,4 +1,4 @@
-Fork of [BaK GL](https://github.com/xavieran/BaKGL) where experiment with typescript-C++ interop for my own pleasure.
+Fork of [BaK GL](https://github.com/xavieran/BaKGL) where I experiment with typescript-C++ interop for my own pleasure.
 
 [QuickJS](https://github.com/bellard/quickjs) is used to make C++ able to call typescript functions.
 
