@@ -26,13 +26,12 @@ class JSEngine {
 private:
     JSRuntime* rt;
     JSContext* ctx;
-    // All js is loaded into this JSValue. To get functions out of it
-    // you can grab globals (on globalThis). Dunno if exports can be grabbed too...?
+    std::string typescript_path;
 
     std::string build_typescript() {
-        const char* cmd = "bun build ../com/js_engine.ts";
-        FILE* pipe = popen(cmd, "r");
-        if (!pipe) throw std::runtime_error("Failed to run: " + std::string(cmd));
+        std::string cmd = "bun build ../" + typescript_path;
+        FILE* pipe = popen(cmd.c_str(), "r");
+        if (!pipe) throw std::runtime_error("Failed to run: " + cmd);
         
         std::string result;
         char buffer[128];
@@ -78,7 +77,8 @@ private:
     }
 
 public:
-    JSEngine() {
+    JSEngine(std::string ts_path = "com/js_engine.ts") 
+        : typescript_path(ts_path) {
         rt = JS_NewRuntime();
         ctx = JS_NewContext(rt);
         if (!rt || !ctx) throw std::runtime_error("JS init failed");

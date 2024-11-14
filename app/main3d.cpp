@@ -136,7 +136,7 @@ int main(int argc, char** argv)
 
     // Add QuickJS test
     {
-        JSEngine jsEngine;
+        JSEngine jsEngine{"com/js_engine.ts"};
         double result = jsEngine.eval<double>("double(2.2)");
         logger.Info() << "JSEngine: double math 2.2*2: " << result << "\n";
         double result2 = jsEngine.eval<double>("add(20, 0.2)");
