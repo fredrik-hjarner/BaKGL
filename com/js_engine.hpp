@@ -50,6 +50,33 @@ private:
         return result;
     }
 
+    std::string getJsonStringFromJsObject(JSContext* ctx, JSValueConst jsObject) {
+        // Get global object
+        JSValue global = JS_GetGlobalObject(ctx);
+        
+        // Get JSON object
+        JSValue jsonObj = JS_GetPropertyStr(ctx, global, "JSON");
+        
+        // Get stringify function
+        JSValue stringifyFunc = JS_GetPropertyStr(ctx, jsonObj, "stringify");
+        
+        // Call JSON.stringify with our object
+        JSValue jsonString = JS_Call(ctx, stringifyFunc, jsonObj, 1, &jsObject);
+        
+        // Convert JSValue string to C string
+        const char* str = JS_ToCString(ctx, jsonString);
+        std::string result = str ? str : "";
+        
+        // Cleanup
+        JS_FreeCString(ctx, str);
+        JS_FreeValue(ctx, jsonString);
+        JS_FreeValue(ctx, stringifyFunc);
+        JS_FreeValue(ctx, jsonObj);
+        JS_FreeValue(ctx, global);
+        
+        return result;
+    }
+
 public:
     JSEngine() {
         rt = JS_NewRuntime();
@@ -122,19 +149,18 @@ public:
             throw std::runtime_error("Failed to execute function");
         }
 
-        const char* json_str = JS_ToCString(ctx, result);
+        std::string jsonStr = getJsonStringFromJsObject(ctx, result);
         auto logger = Logging::LogState::GetLogger("JSEngine");
-        logger.Info() << "JSEngine: json_str: " << json_str << "\n";
-        if (!json_str) {
+        logger.Info() << "JSEngine: jsonStr: " << jsonStr << "\n";
+        if (jsonStr.empty()) {
             JS_FreeValue(ctx, result);
             throw std::runtime_error("Failed to convert result to string");
         }
 
         // Parse JSON and convert to type T
-        auto json_obj = nlohmann::json::parse(json_str);
+        auto json_obj = nlohmann::json::parse(jsonStr);
         T cpp_result = T::from_json(json_obj);  // Using generated conversion
 
-        JS_FreeCString(ctx, json_str);
         JS_FreeValue(ctx, result);
 
         return cpp_result;

@@ -7,10 +7,10 @@ function add(x: number, y: number) {
 }
 
 function getUser() {
-    return JSON.stringify({
+    return {
         name: "John",
         age: 30
-    });
+    };
 }
 
 
