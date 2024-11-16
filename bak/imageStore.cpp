@@ -7,22 +7,32 @@
 
 namespace BAK {
 
+// create a logger for this file.
+const auto logger = Logging::LogState::GetLogger("imageStore");
+
 std::vector<Image> LoadImagesNormal(FileBuffer& fb)
 {
     std::vector<Image> images{};
 
     const unsigned compression = fb.GetUint16LE();
+    logger.Info() << "compression: " << compression << std::endl;
     const unsigned numImages = fb.GetUint16LE();
-
+    logger.Info() << "numImages: " << numImages << std::endl;
     std::vector<unsigned> imageSizes{};
     fb.Skip(2);
     unsigned int size = fb.GetUint32LE();
+    logger.Info() << "size: " << size << std::endl;
     for (unsigned i = 0; i < numImages; i++)
     {
-        imageSizes.emplace_back(fb.GetUint16LE());
+        const auto imageSize = fb.GetUint16LE();
+        logger.Info() << "imageSize: " << imageSize << std::endl;
+        imageSizes.emplace_back(imageSize);
         unsigned flags = fb.GetUint16LE();
+        logger.Info() << "flags: " << flags << std::endl;
         unsigned width = fb.GetUint16LE();
+        logger.Info() << "width: " << width << std::endl;
         unsigned height = fb.GetUint16LE();
+        logger.Info() << "height: " << height << std::endl;
         images.emplace_back(width, height, flags, false);
     }
 

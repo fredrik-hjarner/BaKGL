@@ -39,8 +39,10 @@ public:
             BAK::TextureFactory::AddToTextureStore(
                 textures, "BICONS1.BMX", "OPTIONS.PAL");
 
+            // TODO: what is mPressedOffset?
             mPressedOffset = textures.size();
 
+            // AddToTextureStore is overloaded. string_view variant..
             BAK::TextureFactory::AddToTextureStore(
                 textures, "BICONS2.BMX", "OPTIONS.PAL");
 
@@ -49,6 +51,7 @@ public:
                 mButtonIconsDims.emplace_back(t.GetDims());
             }
 
+            // GetSpriteSheet prolly just gets the empty sprite sheet just created above.
             auto& spriteSheet = spriteManager.GetSpriteSheet(mButtonIconsSpriteSheet);
             spriteSheet.LoadTexturesGL(textures);
         }

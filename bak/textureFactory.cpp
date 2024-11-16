@@ -46,6 +46,8 @@ void TextureFactory::AddToTextureStore(
     std::string_view bmx,
     std::string_view pal)
 {
+    // TODO: How does the paletter work?
+    // It does load an parse a file (pal).
     const auto palette = Palette{std::string{pal}};
 
     auto fb = FileBufferFactory::Get()

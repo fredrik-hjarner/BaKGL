@@ -21,6 +21,34 @@ export class FileBuffer {
     return vector;
   }
 
+//   void
+// FileBuffer::Skip(const int n)
+// {
+//     if ((mCurrent) && (mCurrent + n <= mBuffer + mSize))
+//     {
+//         mCurrent += n;
+//     }
+// }
+
+  skip(n: number): void {
+    // TODO: I dont know why it check (this.index) i.e. that index is not zero.
+    // So I just run some code to explode if that ever happens
+    // TODO: Remove this check prolly, just really for debug.
+    if (!this.index) {
+      throw new Error("FileBuffer.skip: index is zero. Maybe it should be allowed. I dont know.");
+    }
+    // TODO: Remove this check prolly, just really for debug.
+    // So these two exception are not in the original code.
+    // The original code just skipped skipping if the condition was not met.
+    // but I want to examine its behaviour.
+    if(!(this.index + n <= this.uint8Array.length)) {
+      throw new Error(`FileBuffer.skip: index + n is greater than the uint8Array length: ${this.index} + ${n} > ${this.uint8Array.length}`);
+    }
+    if ((this.index) && (this.index + n <= this.uint8Array.length)) {
+        this.index += n;
+    }
+  }
+
   getUint8(): number {
     const value: number = this.uint8Array[this.index];
     this.index += 1;

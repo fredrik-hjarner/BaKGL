@@ -54,6 +54,16 @@ int main(int argc, char** argv)
 
     auto icons = Gui::Icons{spriteManager};
     unsigned iconI = 0;
+    bool useOriginal = false;
+
+    if (argc > 1) {
+        iconI = std::stoi(argv[1]);
+    }
+
+    if (argc > 2) {
+        useOriginal = (std::stoi(argv[2]) != 0);
+    }
+
     auto picture = Gui::Widget{
         Gui::ImageTag{},
         Graphics::SpriteSheetIndex{1},
@@ -177,7 +187,6 @@ int main(int argc, char** argv)
     Graphics::InputHandler inputHandler{};
     Graphics::InputHandler::BindMouseToWindow(window.get(), inputHandler);
     Graphics::InputHandler::BindKeyboardToWindow(window.get(), inputHandler);
-    bool useOriginal = true;
     inputHandler.Bind(GLFW_KEY_K, [&]{ useOriginal = !useOriginal; });
     unsigned k = 0;
     inputHandler.Bind(GLFW_KEY_R, [&]{
@@ -200,9 +209,35 @@ int main(int argc, char** argv)
         picture.SetDimensions(dims);
         logger.Debug() << "Pic: " << picture << "\n";
     });
+    // inputHandler.BindMouse(GLFW_MOUSE_BUTTON_LEFT, [&](auto p)
+    // {
+    //     logger.Debug() << p << "\n";
+    // },
+    // [](auto){});
     inputHandler.BindMouse(GLFW_MOUSE_BUTTON_LEFT, [&](auto p)
     {
-        logger.Debug() << p << "\n";
+        iconI++;
+        picture.SetTexture(Graphics::TextureIndex{iconI});
+        logger.Debug() << "Pic: " << picture << "\n";
+    },
+    [](auto){});
+    inputHandler.BindMouse(GLFW_MOUSE_BUTTON_RIGHT, [&](auto p)
+    {
+        iconI--;
+        const auto& [ss, ti, dims] = icons.GetInventoryLockIcon(iconI);
+        picture.SetSpriteSheet(ss);
+        picture.SetTexture(ti);
+        picture.SetDimensions(dims);
+        logger.Debug() << "Pic: " << picture << "\n";
+    },
+    [](auto){});
+    inputHandler.BindMouse(GLFW_MOUSE_BUTTON_MIDDLE, [&](auto p)
+    {
+        auto params = std::vector<glm::ivec4>{};
+        for (unsigned i = k++; i < ss.mSpriteDimensions.size(); i++)
+            params.emplace_back(glm::ivec4{0, i % objs, i, 0});
+        buffers.LoadBufferDataGL("params", params);
+
     },
     [](auto){});
 

@@ -60,7 +60,11 @@ Displays 3d models.
 
 ## display_ttm
 
-No idea what this does.
+`./display_ttm <ADS> <TTM>`
+
+For example: `./display_ttm C11.ADS C11.TTM`
+
+Not yet sure what those files are.
 
 ## guiInventoryTest
 
@@ -70,13 +74,19 @@ Seems to be testing code.
 
 ## instancing
 
-No idea what this does.
+Shows icons it seems.
 
 ## play_cutscene
 
 `./play_cutscene 1`
 
 Simply plays a cutscene. The argument is the chapter number. Valid numbers seems to be 1-9.
+
+## show_imgui
+
+`./show_imgui`
+
+imgui seems to be library used rendering a debug UI.
 
 ## show_scene
 

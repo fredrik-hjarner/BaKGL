@@ -13,3 +13,5 @@ shaders/shader_binary_cache.hxx
 node_modules
 .task
 quickjs
+log.txt
+log2.txt
