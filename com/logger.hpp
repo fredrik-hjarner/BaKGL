@@ -33,7 +33,7 @@ class LogState
 public:
     static void Disable(const std::string& logger)
     {
-        sDisabledLoggers.emplace_back(logger);
+        // sDisabledLoggers.emplace_back(logger); // TODO: Uncomment
     }
 
     static void SetLevel(LogLevel level)
@@ -45,7 +45,9 @@ public:
     {
         if (level == LevelToString(Logging::LogLevel::Spam))
         {
-            Logging::LogState::SetLevel(Logging::LogLevel::Spam);
+            // TODO: Uncomment
+            // Logging::LogState::SetLevel(Logging::LogLevel::Spam);
+            Logging::LogState::SetLevel(Logging::LogLevel::Debug);
         }
         else if (level == LevelToString(Logging::LogLevel::Debug))
         {
@@ -81,7 +83,7 @@ public:
             sDisabledLoggers.begin(), sDisabledLoggers.end(),
             loggerName);
 
-        if (level >= sGlobalLogLevel && it == sDisabledLoggers.end())
+        // if (level >= sGlobalLogLevel && it == sDisabledLoggers.end()) // TODO: Uncomment
             return DoLog(level, loggerName);
 
         return nullStream;

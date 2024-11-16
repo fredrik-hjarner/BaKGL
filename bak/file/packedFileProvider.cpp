@@ -4,12 +4,17 @@
 
 namespace BAK::File {
 
+// dataProvider seems to be the AggregateFileProvider...
+// which executes FileDataProvider and PackedFileDataProvider
+// so PackedFileDataProvider will pretty much execute itself too..
 PackedFileDataProvider::PackedFileDataProvider(IDataBufferProvider& dataProvider)
 :
     mCache{},
     mLogger{Logging::LogState::GetLogger("PackedFileDataProvider")}
 {
-    auto* resourceIndexFb = dataProvider.GetDataBuffer(ResourceIndex::sFilename);
+    // auto* resourceIndexFb = dataProvider.GetDataBuffer(ResourceIndex::sFilename);
+    // seems "krondor.rmf" is the "resource file".
+    auto* resourceIndexFb = dataProvider.GetDataBuffer("krondor.rmf");
     if (resourceIndexFb == nullptr)
     {
         mLogger.Warn() << "Could not find resource index file [" << ResourceIndex::sFilename
@@ -17,8 +22,10 @@ PackedFileDataProvider::PackedFileDataProvider(IDataBufferProvider& dataProvider
         return;
     }
 
+    // Constructor the ResourceIndex with the krondor.rmf file buffer.
     auto resourceIndex = ResourceIndex{*resourceIndexFb};
 
+    // What is packed resource file? krondor.001 is what it is.
     auto* packedResource = dataProvider.GetDataBuffer(resourceIndex.GetPackedResourceFile());
 
     if (packedResource == nullptr)
@@ -42,6 +49,7 @@ PackedFileDataProvider::PackedFileDataProvider(IDataBufferProvider& dataProvider
     }
 }
 
+// Simply returns what it loaded into the cache in the function above.
 FileBuffer* PackedFileDataProvider::GetDataBuffer(const std::string& fileName)
 {
     mLogger.Spam() << "Searching for file: " << fileName << std::endl;

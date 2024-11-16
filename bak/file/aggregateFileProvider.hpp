@@ -7,6 +7,11 @@
 
 namespace BAK::File {
 
+// Hm so.....
+// This implements IDataBufferProvider
+// FileProvider and PackedFileProvider also implement IDataBufferProvider
+// Seems to me that AggregateFileProvider just executes both of them
+// if the first fails it tries the second.
 class AggregateFileProvider : public IDataBufferProvider
 {
 public:

@@ -1,0 +1,24 @@
+// Purpose
+// - Briefly explain the overall purpose and goal of the function
+// How it Works
+// - Describe the high-level logic and steps the function takes
+// - Explain any key algorithms or techniques used
+// Dependencies
+// - List any external libraries, packages, or modules the function relies on
+// Exceptions
+// - List any exceptions the function might raise and when they occur
+// - Describe how the function handles exceptional cases
+// Inputs
+// - Document each parameter the function accepts
+// - Describe the expected data type, format, and meaning of each input
+// Output
+// - Explain the return value(s) the function provides
+// - Describe the data type, format, and meaning of the output
+// Usage Examples
+// - Provide one or more examples showing how to call the function
+// - Include sample input data and expected output
+// Edge Cases
+// - Identify any edge cases or unexpected behaviors the function may exhibit
+// - Explain how the function is designed to handle these situations
+// References
+// - Link to any external resources, papers, or documentation that informed the function

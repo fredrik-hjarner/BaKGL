@@ -4,6 +4,8 @@
 
 #include "com/logger.hpp"
 
+#include <cstdlib>
+
 namespace BAK::File {
 
 ResourceIndex::ResourceIndex(
@@ -15,7 +17,8 @@ ResourceIndex::ResourceIndex(
     const auto rmfMajorVersion = resourceIndex.GetUint32LE();
     const auto rmfMinorVersion = resourceIndex.GetUint16LE();
 
-    mPackedResourceName = resourceIndex.GetString(sFilenameLength);
+    // mPackedResourceName = resourceIndex.GetString(sFilenameLength);
+    mPackedResourceName = resourceIndex.GetString(13);
     const auto numPackedResources = resourceIndex.GetUint16LE();
     Logging::LogDebug("BAK::ResourceIndex") << "RMF Version (" << rmfMajorVersion << ", " << rmfMinorVersion 
         << ") ResourceFile: " << mPackedResourceName << " Resources: " 
@@ -26,6 +29,12 @@ ResourceIndex::ResourceIndex(
         const unsigned hashKey = resourceIndex.GetUint32LE();
         const std::streamoff offset = resourceIndex.GetUint32LE();
         mResourceIndexData.emplace_back(ResourceIndexData{hashKey, offset});
+
+        // log offset and hash key
+        Logging::LogDebug("BAK::ResourceIndex") << "Resource: " << std::hex << hashKey
+            << std::dec << " offset: " << offset << "\n";
+
+
         //packedResource.Seek(offset);
         //const auto resourceName = packedResource.GetString(sFilenameLength);
         //const auto resourceSize = packedResource.GetUint32LE();

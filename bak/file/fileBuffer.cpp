@@ -144,6 +144,47 @@ FileBuffer FileBuffer::MakeSubBuffer(std::uint32_t offset, std::uint32_t size) c
         0};
 }
 
+/**
+ * Load data from an input file stream into the buffer.
+ *
+ * Purpose:
+ * - Read data from the provided input file stream and store it in the internal buffer.
+ *
+ * How it Works:
+ * 1. Check if the input file stream is open. If not, throw an exception.
+ * 2. Set the current buffer position to the start of the buffer.
+ * 3. Read data from the file stream into the buffer, up to the size of the buffer.
+ * 4. If the read operation fails, throw an exception.
+ *
+ * Dependencies:
+ * - <fstream> for std::ifstream
+ * - <sstream> for std::stringstream 
+ * - "com/logger.hpp" for logging fatal errors
+ *
+ * Exceptions:
+ * - Throws a std::runtime_error if the file stream is not open.
+ * - Throws a std::runtime_error if the read operation fails.
+ *
+ * Inputs:
+ * - ifs: A reference to an input file stream to read data from.
+ *
+ * Output:
+ * - None. The function stores the read data in the internal buffer.
+ *
+ * Usage Example:
+ * ```cpp
+ * std::ifstream inputFile("data.bin", std::ios::binary);
+ * FileBuffer buffer(1024);
+ * buffer.Load(inputFile);
+ * ```
+ *
+ * Edge Cases:
+ * - If the file stream is not open, an exception is thrown.
+ * - If the read operation fails (e.g., due to a corrupted file), an exception is thrown.
+ *
+ * References:
+ * - None
+ */
 void
 FileBuffer::Load(std::ifstream &ifs)
 {
@@ -909,6 +950,34 @@ FileBuffer::GetString(const unsigned len)
     return "";
 }
 
+/**
+ * Purpose:
+ * - Copy a specified number of bytes from the current position in the buffer to a provided memory location.
+ *
+ * How it Works:
+ * 1. Check if the requested number of bytes can be read from the current position without exceeding the buffer size.
+ * 2. If there is enough data, copy the requested number of bytes from the current position to the provided memory location using memcpy.
+ * 3. Advance the current position pointer by the number of bytes read.
+ * 4. If there is not enough data, throw a std::runtime_error with a detailed error message.
+ *
+ * Dependencies:
+ * - <cstring> for memcpy
+ * - <sstream> for std::stringstream
+ * - "com/logger.hpp" for logging fatal errors
+ *
+ * Exceptions:
+ * - Throws a std::runtime_error if there is not enough data in the buffer to fulfill the request.
+ *
+ * Inputs:
+ * - data: A pointer to the memory location where the retrieved data should be stored.
+ * - n: The number of bytes to retrieve from the buffer.
+ *
+ * Output:
+ * - None. The function copies the retrieved data to the provided memory location.
+ *
+ * Edge Cases:
+ * - If the requested number of bytes exceeds the remaining data in the buffer, a std::runtime_error is thrown.
+ */
 void
 FileBuffer::GetData(void *data,
                     const unsigned n)
