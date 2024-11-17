@@ -1,111 +1,116 @@
-// #pragma once
+import { FileBuffer } from './file/fileBuffer';
+import { DataTag } from './dataTags';
+import { extractedDataPath } from '../consts';
+import { readdir } from 'node:fs/promises';
 
-// #include <glm/glm.hpp>
+export type Color = {
+  r: number;
+  g: number;
+  b: number;
+  a: number;
+};
 
-// #include <functional>
-// #include <string>
-// #include <vector>
+export class ColorSwap {
+  public static readonly SIZE = 256;
+  private indices: number[];
 
-// namespace BAK {
+  private constructor(indices: number[]) {
+    this.indices = indices;
+  }
 
-// class Palette;
+  public static async createFromFile(filename: string): Promise<ColorSwap> {
+    const fb = await FileBuffer.createFromFile(filename);
+    const indices: number[] = [];
 
-// class ColorSwap
-// {
-// public:
-//     static constexpr auto sSize = 256;
+    for (let i = 0; i < ColorSwap.SIZE; i++) {
+      indices.push(fb.getUint8());
+    }
 
-//     ColorSwap(const std::string& filename);
+    return new ColorSwap(indices);
+  }
 
-//     const glm::vec4& GetColor(unsigned i, const Palette&) const;
+  public getColor(i: number, pal: Palette): Color {
+    if (i >= ColorSwap.SIZE) {
+      throw new Error(`Index out of bounds: ${i}`);
+    }
+    return pal.getColor(this.indices[i]);
+  }
+}
 
-// private:
-//     std::vector<unsigned> mIndices;
-// };
-// class Palette
-// {
-// public:
-//     Palette(const std::string& filename);
+export class Palette {
+  private colors: Color[];
 
-//     Palette(const Palette& pal, const ColorSwap& cs)
-//     :
-//         mColors{std::invoke([&](){
-//             auto swappedPal = std::vector<glm::vec4>{};
-//             for (unsigned i = 0; i < 256; i++)
-//             {
-//                 swappedPal.emplace_back(cs.GetColor(i, pal));
-//             }
-//             return swappedPal;
-//         })}
-//     {
-//     }
+  private constructor(colors: Color[]) {
+    this.colors = colors;
+  }
 
-//     const glm::vec4& GetColor(unsigned i) const;
+  public static async createFromFile(filename: string): Promise<Palette> {
+    const fb = await FileBuffer.createFromFile(filename);
+    const palbuf = fb.find(DataTag.VGA);
+    const size = palbuf.uint8Array.length / 3;
+    const colors: Color[] = [];
 
-// private:
-//     std::vector<glm::vec4> mColors;
-// };
+    // const F = (x: number) => {
+    //     console.log(`Palette.createFromFile: x: ${x}`);
+    //     console.log(`Palette.createFromFile: (x << 2): ${x << 2}`);
+    //     console.log(`Palette.createFromFile: ((x << 2) / 255): ${((x << 2) / 255).toFixed(2)}`);
+    //     return (x << 2) / 255;
+    // }
+    const F = (x: number) => {
+        const result = (x << 2);
+        // console.log(`Palette.createFromFile: result: ${result}`);
+        // console.log(`Palette.createFromFile: x: ${x}`);
+        // console.log(`Palette.createFromFile: (x << 2): ${x << 2}`);
+        return result;
+    }
 
+    for (let i = 0; i < size; i++) {
+      const r = F(palbuf.getUint8());
+      const g = F(palbuf.getUint8());
+      const b = F(palbuf.getUint8());
+      const a = i === 0 ? 0 : 1;
+      colors.push({ r, g, b, a });
+    }
 
-// }
+    return new Palette(colors);
+  }
 
-// #include "bak/dataTags.hpp"
-// #include "bak/palette.hpp"
+  public static async createFromPalette(pal: Palette, cs: ColorSwap): Promise<Palette> {
+    const colors: Color[] = [];
 
-// #include "com/assert.hpp"
+    for (let i = 0; i < 256; i++) {
+      colors.push(cs.getColor(i, pal));
+    }
 
-// #include "bak/fileBufferFactory.hpp"
+    return new Palette(colors);
+  }
 
-// namespace BAK {
+  public getColor(i: number): Color {
+    if (i >= this.colors.length) {
+      throw new Error(`Index out of bounds: ${i}`);
+    }
+    return this.colors[i];
+  }
+}
 
-// Palette::Palette(const std::string& filename)
-// :
-//     mColors{}
-// {
-//     auto fb = FileBufferFactory::Get().CreateDataBuffer(filename);
-//     auto palbuf = fb.Find(DataTag::VGA);
-//     const auto size = palbuf.GetSize() / 3;
-//     mColors.reserve(size);
+export async function extractPalettesToJson(): Promise<void> {
+  const allFiles = await readdir(extractedDataPath);
+//   console.log(`extractPalettesToJson: allFiles: ${JSON.stringify(allFiles, null, 2)}`);
+  const palFilePaths = allFiles
+    .filter(file => file.toLowerCase().endsWith('.pal'))
+    .map(file => `${extractedDataPath}/${file}`);
+//   console.log(`extractPalettesToJson: palFilePaths: ${JSON.stringify(palFilePaths, null, 2)}`);
+  const fileNames = palFilePaths.map(path => path.split('/').pop());
+//   console.log(`extractPalettesToJson: fileNames: ${JSON.stringify(fileNames, null, 2)}`);
+  const pathAndFileNames = palFilePaths.map((path, i) => ({ path, fileName: fileNames[i] }));   
+//   console.log(`extractPalettesToJson: pathAndFileNames: ${JSON.stringify(pathAndFileNames, null, 2)}`);
 
-//     const auto F = [](auto x){
-//         return static_cast<float>(x) / 255.; };
-
-//     for (unsigned i = 0; i < size; i++)
-//     {
-//         const auto r = F(palbuf.GetUint8() << 2);
-//         const auto g = F(palbuf.GetUint8() << 2);
-//         const auto b = F(palbuf.GetUint8() << 2);
-//         const auto a = i == 0 ? 0.0 : 1.0;
-//         mColors.emplace_back(r, g, b , a);
-//     }
-// }
-
-// const glm::vec4& Palette::GetColor(unsigned i) const
-// {
-//     ASSERT(i < mColors.size());
-//     return mColors[i];
-// }
-
-// ColorSwap::ColorSwap(const std::string& filename)
-// :
-//     mIndices{}
-// {
-//     mIndices.reserve(sSize);
-//     auto fb = FileBufferFactory::Get().CreateDataBuffer(filename);
-
-//     for (unsigned i = 0; i < sSize; i++)
-//     {
-//         mIndices.emplace_back(fb.GetUint8());
-//     }
-// }
-
-// const glm::vec4& ColorSwap::GetColor(unsigned i, const Palette& pal) const
-// {
-//     ASSERT(i < sSize);
-//     return pal.GetColor(mIndices[i]);
-// }
-
-// }
-
-// IMPORTANT: The code above is from c++ project and just for reference. I want to create a typescript version below.
-
+  for (const { path: palFilePath, fileName } of pathAndFileNames) {
+    const palette = await Palette.createFromFile(palFilePath);
+    const jsonFileName = `${fileName!.slice(0, -4)}.palette.json`;
+    const jsonFilePath = `${extractedDataPath}/step2/PAL/${jsonFileName}`;
+    
+    console.log(`extractPalettesToJson: jsonFilePath: ${JSON.stringify(jsonFilePath, null, 2)}`);
+    await Bun.write(jsonFilePath, JSON.stringify(palette, null, 2));
+  }
+}

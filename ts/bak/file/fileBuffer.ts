@@ -1,3 +1,5 @@
+import type { DataTag } from "../dataTags";
+
 export const COMPRESSION_LZW  = 0;
 export const COMPRESSION_LZSS = 1;
 export const COMPRESSION_RLE  = 2;
@@ -259,6 +261,26 @@ export class FileBuffer {
 
   rewind(): void {
     this.index = 0;
+  }
+
+  find(tag: DataTag): FileBuffer {
+    let search = this.uint8Array;
+    for (let i = 0; i < this.uint8Array.length - 4; i++) {
+      const current = this.uint8Array[i] |
+        (this.uint8Array[i + 1] << 8) |
+        (this.uint8Array[i + 2] << 16) |
+        (this.uint8Array[i + 3] << 24);
+      if (current === tag) {
+        const offset = i + 4;
+        const size = this.uint8Array[offset] |
+          (this.uint8Array[offset + 1] << 8) |
+          (this.uint8Array[offset + 2] << 16) |
+          (this.uint8Array[offset + 3] << 24);
+        return this.makeSubBuffer(offset + 4, size);
+      }
+    }
+
+    throw new Error(`Tag not found: ${tag}`);
   }
 }
 

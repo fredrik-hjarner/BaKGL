@@ -1,3 +1,5 @@
+#include "com/logger.hpp"
+
 #include "bak/textureFactory.hpp"
 
 #include "bak/imageStore.hpp"
@@ -62,6 +64,9 @@ void TextureFactory::AddScreenToTextureStore(
     std::string_view scx,
     std::string_view pal)
 {
+    const auto& logger = Logging::LogState::GetLogger("TextureFactory.AddScreenToTexture");
+    logger.Debug() << "scx: " << scx << " pal: " << pal << "\n";
+
     const auto palette = Palette{std::string{pal}};
     auto fb = FileBufferFactory::Get()
         .CreateDataBuffer(std::string{scx});

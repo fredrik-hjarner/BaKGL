@@ -1,153 +1,76 @@
-// #pragma once
+import { FileBuffer } from './file/fileBuffer';
 
-// #include <vector>
+const FLAG_XYSWAPPED  = 0x20;
+const FLAG_UNKNOWN    = 0x40;
+const FLAG_COMPRESSED = 0x80;
 
-// #include "bak/fileBufferFactory.hpp"
+interface ImageOptions {
+  width: number;
+  height: number;
+  flags: number;
+  isHighResLowCol: boolean;
+  pixels?: Uint8Array;
+}
 
-// namespace BAK {
+export class Image {
+  public width: number;
+  public height: number;
+  public flags: number;
+  public isHighResLowCol: boolean;
+  public pixels: Uint8Array;
 
-// class Image
-// {
-// public:
-//     Image(unsigned width, unsigned height, unsigned flags, bool isHighResLowCol);
+  constructor(options: ImageOptions) {
+    this.width = options.width;
+    this.height = options.height;
+    this.flags = options.flags;
+    this.isHighResLowCol = options.isHighResLowCol;
+    this.pixels = options.pixels || new Uint8Array(options.width * options.height);
+  }
 
-//     unsigned GetWidth() const;
-//     unsigned GetHeight() const;
-//     unsigned GetSize() const;
-//     bool IsHighResLowCol() const;
-//     uint8_t * GetPixels() const;
-//     uint8_t GetPixel(unsigned x, unsigned y) const;
-//     void Load(FileBuffer *buffer);
-//     void SetPixel(unsigned x, unsigned y, std::uint8_t color );
+  getPixel(x: number, y: number): number {
+    return this.pixels[x + this.width * y];
+  }
 
-// private:
-//     unsigned mWidth;
-//     unsigned mHeight;
-//     unsigned int mFlags;
-//     bool mIsHighResLowCol;
-//     std::vector<uint8_t> mPixels;
-// };
+  setPixel(x: number, y: number, color: number): void {
+    if (x < this.width && y < this.height) {
+      this.pixels[x + this.width * y] = color;
+    }
+  }
 
-// }
+  load(buffer: FileBuffer): void {
+    if (this.pixels.length !== this.width * this.height) {
+      throw new Error(`Invalid image dimensions: ${this.width}x${this.height} (expected ${this.pixels.length} pixels)`);
+    }
+    
+    let imgbuf: FileBuffer;
+    if (this.flags & FLAG_COMPRESSED) {
+      imgbuf = FileBuffer.createEmpty(this.width * this.height);
+      buffer.decompressRLE(imgbuf);
+    } else {
+      imgbuf = buffer;
+    }
 
-// #include "bak/image.hpp"
-
-// #include "com/assert.hpp"
-
-// #include <cstring>
-
-// namespace BAK {
-
-// const unsigned int FLAG_XYSWAPPED  = 0x20;
-// const unsigned int FLAG_UNKNOWN    = 0x40;
-// const unsigned int FLAG_COMPRESSED = 0x80;
-
-// Image::Image(unsigned width, unsigned height, unsigned flags, bool isHighResLowCol)
-// :
-//     mWidth(width),
-//     mHeight(height),
-//     mFlags(flags),
-//     mIsHighResLowCol(isHighResLowCol),
-//     mPixels()
-// {
-//     mPixels.resize(width * height);
-// }
-
-// unsigned Image::GetWidth() const
-// {
-//     return mWidth;
-// }
-
-// unsigned Image::GetHeight() const
-// {
-//     return mHeight;
-// }
-
-// unsigned Image::GetSize() const
-// {
-//     return mWidth * mHeight;
-// }
-
-// bool Image::IsHighResLowCol() const
-// {
-//     return mIsHighResLowCol;
-// }
-
-// uint8_t* Image::GetPixels() const
-// {
-//     // FIXME!
-//     return const_cast<uint8_t *>(mPixels.data());
-// }
-
-// uint8_t Image::GetPixel(unsigned x, unsigned y) const
-// {
-//    return mPixels[x + mWidth * y];
-// }
-
-
-// void Image::SetPixel(unsigned x, unsigned y, std::uint8_t color)
-// {
-//     if ((x < mWidth) && (y < mHeight))
-//     {
-//         mPixels[x + mWidth * y] = color;
-//     }
-// }
-
-// void Image::Load(FileBuffer *buffer)
-// {
-//     ASSERT(mPixels.size() == mWidth * mHeight);
-//     FileBuffer *imgbuf;
-//     if (mFlags & FLAG_COMPRESSED)
-//     {
-//         imgbuf = new FileBuffer(mWidth * mHeight);
-//         buffer->DecompressRLE(imgbuf);
-//     }
-//     else
-//     {
-//         imgbuf = buffer;
-//     }
-
-//     if (mFlags & FLAG_XYSWAPPED)
-//     {
-//         for (unsigned x = 0; x < mWidth; x++)
-//         {
-//             for (unsigned y = 0; y < mHeight; y++)
-//             {
-//                 SetPixel(x, y, imgbuf->GetUint8());
-//             }
-//         }
-//     }
-//     else
-//     {
-//         if (IsHighResLowCol())
-//         {
-//             for (unsigned y = 0; y < mHeight; y++)
-//             {
-//                 for (unsigned x = 0; x < mWidth; x++)
-//                 {
-//                     std::uint8_t c = imgbuf->GetUint8();
-//                     SetPixel(x, y, (c & 0xf0) >> 4);
-//                     x++;
-//                     SetPixel(x, y, c & 0x0f);
-//                 }
-//             }
-//         }
-//         else
-//         {
-//             for (unsigned i = 0; i < GetSize(); i++)
-//             {
-//                 mPixels[i] = imgbuf->GetUint8();
-//             }
-//         }
-//     }
-
-//     if (mFlags & FLAG_COMPRESSED)
-//     {
-//         delete imgbuf;
-//     }
-// }
-
-// }
-
-// IMPORTANT: The code above is from c++ project and just for reference. I want to create a typescript version below.
-
+    if (this.flags & FLAG_XYSWAPPED) {
+      for (let x = 0; x < this.width; x++) {
+        for (let y = 0; y < this.height; y++) {
+          this.setPixel(x, y, imgbuf.getUint8());
+        }
+      }
+    } else {
+      if (this.isHighResLowCol) {
+        for (let y = 0; y < this.height; y++) {
+          for (let x = 0; x < this.width; x++) {
+            const c = imgbuf.getUint8();
+            this.setPixel(x, y, (c & 0xf0) >> 4);
+            x++;
+            this.setPixel(x, y, c & 0x0f);
+          }
+        }
+      } else {
+        for (let i = 0; i < this.width * this.height; i++) {
+          this.pixels[i] = imgbuf.getUint8();
+        }
+      }
+    }
+  }
+}
