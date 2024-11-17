@@ -107,7 +107,7 @@ export async function extractPalettesToJson(): Promise<void> {
 
   for (const { path: palFilePath, fileName } of pathAndFileNames) {
     const palette = await Palette.createFromFile(palFilePath);
-    const jsonFileName = `${fileName!.slice(0, -4)}.palette.json`;
+    const jsonFileName = `${fileName!.slice(0, -4)}.PAL.json`;
     const jsonFilePath = `${extractedDataPath}/step2/PAL/${jsonFileName}`;
     
     console.log(`extractPalettesToJson: jsonFilePath: ${JSON.stringify(jsonFilePath, null, 2)}`);

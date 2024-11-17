@@ -43,12 +43,53 @@ std::vector<Image> LoadImagesNormal(FileBuffer& fb)
     }
 
     FileBuffer decompressed = FileBuffer(size);
+
+    // Log the fb buffer
+    const uint8_t* buffer = fb.GetBuffer();
+    const size_t bufferSize = fb.GetSize();
+    std::cout << "fb.GetBuffer(): [";
+    for (size_t i = 0; i < bufferSize; ++i)
+    {
+        std::cout << static_cast<int>(buffer[i]);
+        if (i < bufferSize - 1)
+            std::cout << ", ";
+    }
+    std::cout << "]" << std::endl;
+
     fb.Decompress(&decompressed, compression);
     for (unsigned int i = 0; i < numImages; i++)
     {
         auto imageBuffer = FileBuffer(imageSizes[i]);
         imageBuffer.Fill(&decompressed);
+
+        {
+            // Log the imageBuffer buffer
+            const uint8_t* buffer = imageBuffer.GetBuffer();
+            const size_t bufferSize = imageBuffer.GetSize();
+            std::cout << "imageBuffer.GetBuffer(): [";
+            for (size_t i = 0; i < bufferSize; ++i)
+            {
+                std::cout << static_cast<int>(buffer[i]);
+                if (i < bufferSize - 1)
+                    std::cout << ", ";
+            }
+            std::cout << "]" << std::endl;
+        }
+
         images[i].Load(&imageBuffer);
+
+        {
+            // Log the images[i].pixels
+            const uint8_t* pixels = images[i].GetPixels();
+            const size_t pixelsSize = images[i].GetSize();
+            std::cout << "images[" << i << "].pixels: [";
+            for (size_t j = 0; j < pixelsSize; ++j)
+            {
+                std::cout << static_cast<int>(pixels[j]);
+                if (j < pixelsSize - 1)
+                    std::cout << ", ";
+            }
+        }
     }
 
     return images;

@@ -24,19 +24,15 @@ export class FileBuffer {
     return new FileBuffer(uint8Array);
   }
 
-  // populate buf with contents of this buffer.
-  // TODO: This could probably be done better and with better
-  // function name to make it clearer, like .clone or something.
+  // populate this.uint8Array with contents of buf.uint8Array.
+  // TODO: THis probably needs a better explanation and better function name.
+  // because its very unclear what it does.
   fill(buf: FileBuffer): void {
-    // buf.uint8Array.length; // in this function I want to keep the size of buf the same!!!!
     this.index = 0;
-    buf.uint8Array.set(this.uint8Array);
-    // buf.uint8Array = this.uint8Array.slice();
-    // TODO: Original code seem to also move index forward.
-    // That because data is read from this buffer so index
-    // is moved forward, so it will pretty much be at the end
-    // but I dont think thats needed here?
-    this.index = this.uint8Array.length;
+    buf.getData(
+      this.uint8Array,
+      Math.min(this.uint8Array.length, buf.uint8Array.length),
+    );
   }
 
   loadUint8Vector(length: number): number[] {
@@ -109,8 +105,9 @@ export class FileBuffer {
     return new FileBuffer(this.uint8Array.subarray(offset, offset + size));
   }
 
-  // decompresses this buffer and put it on the fb buffer on argument.
-  decompressLZW(fb: FileBuffer) {
+  // decompresses this buffer and put it on the result buffer on argument.
+  decompressLZW(result: FileBuffer) {
+    console.log(`decompressLZW: fb.uint8Array.length: ${result.uint8Array.length}`);
     try {
       const codetable: { prefix: number; append: number }[] = new Array(4096);
       const decodestack: number[] = new Array(4096);
@@ -120,11 +117,9 @@ export class FileBuffer {
       let oldcode = this.getBits(n_bits);
       let lastbyte = oldcode;
       let bitpos = 0;
-      const result = new Uint8Array(this.uint8Array.length);
-      let resultIndex = 0;
-      result[resultIndex++] = oldcode;
+      result.putUint8(oldcode);
 
-      while (this.index < this.uint8Array.length) {
+      while (!this.atEnd() && !result.atEnd()) {
         const newcode = this.getBits(n_bits);
         bitpos += n_bits;
         if (newcode === 256) {
@@ -146,7 +141,7 @@ export class FileBuffer {
           decodestack[stackptr++] = code;
           lastbyte = code;
           while (stackptr > 0) {
-            result[resultIndex++] = decodestack[--stackptr];
+            result.putUint8(decodestack[--stackptr]);
           }
           if (free_entry < 4096) {
             codetable[free_entry] = { prefix: oldcode, append: lastbyte };
@@ -159,11 +154,9 @@ export class FileBuffer {
           oldcode = newcode;
         }
       }
+      result.rewind();
 
-      // return new FileBuffer(result.slice(0, resultIndex));
-      // put the stuff on the fb buffer.
-      // TODO: Maybe instead of operating on "result" should just operate on fb directly.
-      fb.uint8Array = result.slice(0, resultIndex);
+      console.log(`decompressLZW: result.uint8Array: ${result.uint8Array}`);
     } catch (e: any) {
       console.error(`Error in decompressLZW: ${e?.message}`);
       throw e;
@@ -190,9 +183,9 @@ export class FileBuffer {
     }
   }
 
-  // decompresses this buffer and put it on the fb buffer on argument.
+  // decompresses this buffer and put it on the result buffer on argument.
   // TODO: The original code a number here, do I need that?
-  decompress(fb: FileBuffer, method: number) {
+  decompress(result: FileBuffer, method: number) {
     switch (method) {
       case COMPRESSION_LZW: {
         const firstValue = this.getUint8();
@@ -200,14 +193,18 @@ export class FileBuffer {
           throw new Error("DataCorruption!");
         }
         const secondValue = this.getUint32LE();
-        if (secondValue !== fb.uint8Array.length) {
-          throw new Error(`DataCorruption! Expected ${fb.uint8Array.length} but got ${secondValue}`);
+        if (secondValue !== result.uint8Array.length) {
+          throw new Error(`DataCorruption! Expected ${result.uint8Array.length} but got ${secondValue}`);
         }
-        this.decompressLZW(fb);
+        this.decompressLZW(result);
         // Maybe the check for size should be afterwards?
         return;
       }
       // TODO: Implement the other compression methods.
+      case COMPRESSION_RLE: {
+        this.decompressRLE(result);
+        return;
+      }
       default: {
         throw new Error(`Unknown compression method: ${method}`);
       }
@@ -281,6 +278,26 @@ export class FileBuffer {
     }
 
     throw new Error(`Tag not found: ${tag}`);
+  }
+
+  putUint8(x: number): void {
+    if (this.index < this.uint8Array.length) {
+      this.uint8Array[this.index] = x;
+      this.index += 1;
+    } else {
+      throw new Error("BufferFull!");
+    }
+  }
+
+  // TODO: Write a comment explaining what this function does and maybe rename.
+  // because its a bit unclear.
+  getData(data: Uint8Array, n: number): void {
+    if (this.index + n <= this.uint8Array.length) {
+      data.set(this.uint8Array.subarray(this.index, this.index + n));
+      this.index += n;
+    } else {
+      throw new Error("BufferEmpty!");
+    }
   }
 }
 

@@ -110,14 +110,13 @@
 import { FileBuffer } from "./file/fileBuffer.ts";
 import { extractedDataPath } from "../consts.ts";
 import { COMPRESSION_LZSS } from "./file/fileBuffer.ts";
-
-type Image = any; // TODO: Fix type.
+import { Image } from "./image.ts";
 
 function log(message: string) {
     console.log(`[imageStore.ts/loadImages] ${message}`);
 }
 
-// loads images from a *.BMX file.
+// loads images from a *.BMX file. (maybe from other files???)
 export function loadImagesNormal(fb: FileBuffer): Image[] {
     const images: Image[] = [];
 
@@ -141,16 +140,16 @@ export function loadImagesNormal(fb: FileBuffer): Image[] {
         log(`Width: ${width}`);
         const height = fb.getUint16LE();
         log(`Height: ${height}`);
-        images.push({
+        images.push(new Image({
             width,
             height,
             flags,
             isHighResLowCol: false,
-        });
+        }));
     }
 
-    log(`imageSizes: ${JSON.stringify(imageSizes)}`);
-    log(`images: ${JSON.stringify(images, null, 2)}`);
+    // log(`imageSizes: ${JSON.stringify(imageSizes)}`);
+    // log(`images: ${JSON.stringify(images, null, 2)}`);
 
     // if (compression === 1) {
     if (compression === COMPRESSION_LZSS) {
@@ -170,11 +169,17 @@ export function loadImagesNormal(fb: FileBuffer): Image[] {
     // }
 
     const decompressedFileBuffer = FileBuffer.createEmpty(size);
+    console.log(`fb.uint8Array: ${fb.uint8Array}`);
+    console.log();
     fb.decompress(decompressedFileBuffer, compression);
     for (let i = 0; i < numImages; i++) {
         const imageBuffer = FileBuffer.createEmpty(imageSizes[i]);
         imageBuffer.fill(decompressedFileBuffer);
-        // images[i].load(imageBuffer);
+        // console.log(`imageBuffer.uint8Array: ${imageBuffer.uint8Array}`);
+        // console.log();
+        images[i].load(imageBuffer);
+        // console.log(`images[${i}].pixels: ${images[i].pixels}`);
+        // TODO: Seems everything is working up to this point.
     }
 
     return images;

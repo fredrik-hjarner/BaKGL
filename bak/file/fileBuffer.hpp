@@ -162,6 +162,12 @@ public:
     void PutData(std::uint8_t x, unsigned n);
     void PutBits(unsigned x, unsigned n);
 
+    // Just for debugging. simple getter for mBuffer.
+    std::uint8_t * GetBuffer() const
+    {
+        return mBuffer;
+    }
+
 private:
     // Be nicer if this was a shared ptr...
     // mBuffer contains the data

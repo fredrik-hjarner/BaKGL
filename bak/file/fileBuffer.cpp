@@ -92,11 +92,13 @@ FileBuffer::CopyTo(FileBuffer *buf, const unsigned n)
     }
 }
 
+// populate this.mBuffer with contents of buf.mBuffer.
 void
 FileBuffer::Fill(FileBuffer *buf)
 {
     if (mBuffer)
     {
+        // Reset the current index to the start of the buffer
         mCurrent = mBuffer;
         buf->GetData(mBuffer, std::min(mSize, buf->GetSize()));
     }
@@ -605,6 +607,8 @@ CodeTableEntry;
 unsigned
 FileBuffer::DecompressLZW(FileBuffer *result)
 {
+    const auto logger = Logging::LogState::GetLogger("fileBuffer");
+    logger.Info() << "DecompressLZW: result.size: " << result->GetSize() << std::endl;
     try
     {
         CodeTableEntry *codetable = new CodeTableEntry[4096];
@@ -664,7 +668,31 @@ FileBuffer::DecompressLZW(FileBuffer *result)
         delete[] decodestack;
         delete[] codetable;
         unsigned res = result->GetBytesDone();
+        logger.Info() << "DecompressLZW: result->GetBytesDone: " << res << std::endl;
         result->Rewind();
+        // log result like what I show beneath:
+        // Log the result buffer
+        // const uint8_t* buffer = fb.GetBuffer();
+        // const size_t bufferSize = fb.GetSize();
+        // std::cout << "fb.GetBuffer(): [";
+        // for (size_t i = 0; i < bufferSize; ++i)
+        // {
+        //     std::cout << static_cast<int>(buffer[i]);
+        //     if (i < bufferSize - 1)
+        //         std::cout << ", ";
+        // }
+        // std::cout << "]" << std::endl;
+        const uint8_t* buffer = result->GetBuffer();
+        const size_t bufferSize = result->GetSize();
+        std::cout << "result.GetBuffer(): [";
+        for (size_t i = 0; i < bufferSize; ++i)
+        {
+            std::cout << static_cast<int>(buffer[i]);
+            if (i < bufferSize - 1)
+                std::cout << ", ";
+        }
+        std::cout << "]" << std::endl;
+
         return res;
     }
     catch (std::exception& e)
