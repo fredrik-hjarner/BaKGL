@@ -10,7 +10,7 @@ type Color = {
   a: number;
 };
 
-type Palette = {
+export type Palette = {
   colors: Color[];
 };
 
