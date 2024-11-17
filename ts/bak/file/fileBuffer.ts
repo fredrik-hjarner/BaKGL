@@ -168,7 +168,28 @@ export class FileBuffer {
     }
   }
 
+  // returns how many bytes were read from this buffer.
+  decompressRLE(fb: FileBuffer): number {
+    try {
+      while (!this.atEnd() && !fb.atEnd()) {
+        const control = this.getUint8();
+        if (control & 0x80) {
+          fb.putData(this.getUint8(), control & 0x7f);
+        } else {
+          fb.copyFrom(this, control);
+        }
+      }
+      const indexAfterwards = this.index;
+      fb.rewind();
+      return indexAfterwards;
+    } catch (e: any) {
+      console.error(`Error in decompressRLE: ${e?.message}`);
+      throw e;
+    }
+  }
+
   // decompresses this buffer and put it on the fb buffer on argument.
+  // TODO: The original code a number here, do I need that?
   decompress(fb: FileBuffer, method: number) {
     switch (method) {
       case COMPRESSION_LZW: {
@@ -209,6 +230,35 @@ export class FileBuffer {
       this.skip(1);
       this.nextBit = 0;
     }
+  }
+
+  atEnd(): boolean {
+    return this.index >= this.uint8Array.length;
+  }
+
+  // TODO: Havent doublecheced if this is correctly implemented.
+  putData(data: number, n: number): void {
+    if (this.index + n <= this.uint8Array.length) {
+      this.uint8Array.fill(data, this.index, this.index + n);
+      this.index += n;
+    } else {
+      throw new Error("BufferFull!");
+    }
+  }
+
+  // TODO: Havent doublecheced if this is correctly implemented.
+  copyFrom(src: FileBuffer, n: number): void {
+    if (this.index + n <= this.uint8Array.length) {
+      this.uint8Array.set(src.uint8Array.subarray(src.index, src.index + n), this.index);
+      this.index += n;
+      src.index += n;
+    } else {
+      throw new Error("BufferFull!");
+    }
+  }
+
+  rewind(): void {
+    this.index = 0;
   }
 }
 

@@ -121,10 +121,6 @@ function log(message: string) {
 export function loadImagesNormal(fb: FileBuffer): Image[] {
     const images: Image[] = [];
 
-    // TODO: What are the different compression types?
-    // static constexpr auto COMPRESSION_LZW  = 0;
-    // static constexpr auto COMPRESSION_LZSS = 1;
-    // static constexpr auto COMPRESSION_RLE  = 2;
     const compression = fb.getUint16LE();
     log(`Compression: ${compression}`);
     const numImages = fb.getUint16LE();
