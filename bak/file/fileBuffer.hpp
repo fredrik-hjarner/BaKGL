@@ -164,7 +164,9 @@ public:
 
 private:
     // Be nicer if this was a shared ptr...
+    // mBuffer contains the data
     std::uint8_t * mBuffer;
+    // mCurrent points to the current position in the buffer
     std::uint8_t * mCurrent;
     unsigned mSize;
     unsigned mNextBit;

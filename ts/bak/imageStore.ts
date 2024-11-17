@@ -109,6 +109,7 @@
 
 import { FileBuffer } from "./file/fileBuffer.ts";
 import { extractedDataPath } from "../consts.ts";
+import { COMPRESSION_LZSS } from "./file/fileBuffer.ts";
 
 type Image = any; // TODO: Fix type.
 
@@ -155,14 +156,30 @@ export function loadImagesNormal(fb: FileBuffer): Image[] {
     log(`imageSizes: ${JSON.stringify(imageSizes)}`);
     log(`images: ${JSON.stringify(images, null, 2)}`);
 
-    if (compression === 1) {
+    // if (compression === 1) {
+    if (compression === COMPRESSION_LZSS) {
         // Not sure why this is needed or if *2 is the right number
         // TODO: Examine the bahaviour. should be easy to see how much
         // space is needed if I decompress every single image I think.
         size *= 2;
     }
 
-    // TODO: Implement more.
+    // FileBuffer decompressed = FileBuffer(size);
+    // fb.Decompress(&decompressed, compression);
+    // for (unsigned int i = 0; i < numImages; i++)
+    // {
+    //     auto imageBuffer = FileBuffer(imageSizes[i]);
+    //     imageBuffer.Fill(&decompressed);
+    //     images[i].Load(&imageBuffer);
+    // }
+
+    const decompressedFileBuffer = FileBuffer.createEmpty(size);
+    fb.decompress(decompressedFileBuffer, compression);
+    for (let i = 0; i < numImages; i++) {
+        const imageBuffer = FileBuffer.createEmpty(imageSizes[i]);
+        imageBuffer.fill(decompressedFileBuffer);
+        // images[i].load(imageBuffer);
+    }
 
     return images;
 }

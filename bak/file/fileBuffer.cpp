@@ -749,29 +749,36 @@ FileBuffer::DecompressRLE(FileBuffer *result)
 unsigned
 FileBuffer::Decompress(FileBuffer *result, const unsigned method)
 {
+    const auto logger = Logging::LogState::GetLogger("fileBuffer");
+
     switch (method)
     {
     case COMPRESSION_LZW:
-        if ((GetUint8() != 0x02) || (GetUint32LE() != result->GetSize()))
+    {
+        auto firstValue = GetUint8();
+        auto secondValue = GetUint32LE();
+        logger.Info() << "firstValue: " << firstValue << std::endl;
+        logger.Info() << "secondValue: " << secondValue << std::endl;
+        if (firstValue != 0x02 || secondValue != result->GetSize())
         {
             std::stringstream ss{};
             ss << __FILE__ << ":" << __LINE__ << " " << __FUNCTION__ << " DataCorruption!";
             Logging::LogFatal("FileBuffer") << ss.str() << std::endl;
             throw std::runtime_error(ss.str());
         }
-        return DecompressLZW(result); break;
+        return DecompressLZW(result);
+    }
     case COMPRESSION_LZSS:
         return DecompressLZSS(result);
-        break;
     case COMPRESSION_RLE:
         return DecompressRLE(result);
-        break;
     default:
+    {
         std::stringstream ss{};
         ss << __FILE__ << ":" << __LINE__ << " " << __FUNCTION__ << " CompressionError!";
         Logging::LogFatal("FileBuffer") << ss.str() << std::endl;
         throw std::runtime_error(ss.str());
-        break;
+    }
     }
 }
 
