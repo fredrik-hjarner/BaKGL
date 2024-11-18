@@ -26,7 +26,29 @@ const scxPairs = [
     { imageFileName: 'RIFTMAP.SCX', paletteFileName: 'OPTIONS.PAL' },
 ]
 
+// because there are so many ACT (ACTOR) files, we need a helper to create the pairs.
+const actPairHelper = (actIndex: number, a: boolean = true, onlyA: boolean = false) => {
+    const paddedIndex = actIndex.toString().padStart(3, '0');
+    const result = [];
+    if (!onlyA) {
+        result.push({
+            imageFileName: `ACT${paddedIndex}.BMX`,
+            paletteFileName: `ACT${paddedIndex}.PAL`,
+        });
+    }
+    if (a) {
+        result.push({
+            imageFileName: `ACT${paddedIndex}A.BMX`,
+            paletteFileName: `ACT${paddedIndex}.PAL`,
+        });
+    }
+    return result;
+}
+
 const imagePalettePairs = [
+    /////////////////////////////
+    // BMX with known palettes //
+    /////////////////////////////
     { imageFileName: 'BICONS1.BMX', paletteFileName: 'OPTIONS.PAL' },
     { imageFileName: 'BICONS2.BMX', paletteFileName: 'OPTIONS.PAL' },
     // { imageFileName: 'CASTFACE.BMX', paletteFileName: 'OPTIONS.PAL' },
@@ -39,7 +61,68 @@ const imagePalettePairs = [
     { imageFileName: 'INVSHP1.BMX', paletteFileName: 'OPTIONS.PAL' },
     { imageFileName: 'INVSHP2.BMX', paletteFileName: 'OPTIONS.PAL' },
     { imageFileName: 'POINTERG.BMX', paletteFileName: 'OPTIONS.PAL' },
-    { imageFileName: 'TELEPORT.BMX', paletteFileName: 'TELEPORT.PAL' }
+    { imageFileName: 'TELEPORT.BMX', paletteFileName: 'TELEPORT.PAL' },
+    ...actPairHelper(1),
+    ...actPairHelper(2),
+    ...actPairHelper(3),
+    ...actPairHelper(4),
+    ...actPairHelper(5),
+    ...actPairHelper(6),
+    ...actPairHelper(7, false),
+    ...actPairHelper(8, false),
+    ...actPairHelper(9, true, true),
+    ...actPairHelper(10, false),
+    ...actPairHelper(11, false),
+    ...actPairHelper(12, true, true),
+    ...actPairHelper(13, false),
+    ...actPairHelper(14, false),
+    ...actPairHelper(15, false),
+    ...actPairHelper(16, false),
+    ...actPairHelper(17, false),
+    ...actPairHelper(18, true, true),
+    ...actPairHelper(19, false),
+    ...actPairHelper(20, false),
+    ...actPairHelper(21, false),
+    ...actPairHelper(22, false),
+    ...actPairHelper(23, false),
+    ...actPairHelper(24, false),
+    ...actPairHelper(25, false),
+    ...actPairHelper(26, false),
+    ...actPairHelper(27, false),
+    ...actPairHelper(28, false),
+    ...actPairHelper(29, false),
+    ...actPairHelper(30, true, true),
+    ...actPairHelper(31, false),
+    ...actPairHelper(32, false),
+    ...actPairHelper(33, false),
+    ...actPairHelper(34, false),
+    ...actPairHelper(35, false),
+    ...actPairHelper(36, false),
+    ...actPairHelper(37, false),
+    ...actPairHelper(38, false),
+    ...actPairHelper(39, false),
+    ...actPairHelper(40),
+    ...actPairHelper(41),
+    ...actPairHelper(42),
+
+
+
+
+
+
+
+
+
+    ///////////////////////////////
+    // BMX with unknown palettes //
+    ///////////////////////////////
+
+    // { imageFileName: 'BOOK.BMX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'BOOM.BMX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'BRK1.BMX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'BRK2.BMX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'BRK3.BMX', paletteFileName: 'OPTIONS.PAL' },
+    // { imageFileName: 'C12B_ARC.BMX', paletteFileName: 'OPTIONS.PAL' },
 ];
 
 type DumpBmpParams = {

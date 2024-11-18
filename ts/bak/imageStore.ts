@@ -156,7 +156,7 @@ export function loadImagesNormal(fb: FileBuffer): Image[] {
         // Not sure why this is needed or if *2 is the right number
         // TODO: Examine the bahaviour. should be easy to see how much
         // space is needed if I decompress every single image I think.
-        size *= 2;
+        size *= 3;
     }
 
     // FileBuffer decompressed = FileBuffer(size);

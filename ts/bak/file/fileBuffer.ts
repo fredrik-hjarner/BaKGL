@@ -164,18 +164,21 @@ export class FileBuffer {
   }
 
   // returns how many bytes were read from this buffer.
-  decompressRLE(fb: FileBuffer): number {
+  decompressRLE(result: FileBuffer): number {
     try {
-      while (!this.atEnd() && !fb.atEnd()) {
+      while (!this.atEnd() && !result.atEnd()) {
         const control = this.getUint8();
         if (control & 0x80) {
-          fb.putData(this.getUint8(), control & 0x7f);
+          const n = control & 0x7f;
+          // TODO: Doublecheck here. Next line looks odd.
+          const data = new Uint8Array(n).fill(this.getUint8());
+          result.putData(data, n);
         } else {
-          fb.copyFrom(this, control);
+          result.copyFrom(this, control);
         }
       }
       const indexAfterwards = this.index;
-      fb.rewind();
+      result.rewind();
       return indexAfterwards;
     } catch (e: any) {
       console.error(`Error in decompressRLE: ${e?.message}`);
@@ -200,7 +203,10 @@ export class FileBuffer {
         // Maybe the check for size should be afterwards?
         return;
       }
-      // TODO: Implement the other compression methods.
+      case COMPRESSION_LZSS: {
+        this.decompressLZSS(result);
+        return;
+      }
       case COMPRESSION_RLE: {
         this.decompressRLE(result);
         return;
@@ -208,6 +214,37 @@ export class FileBuffer {
       default: {
         throw new Error(`Unknown compression method: ${method}`);
       }
+    }
+  }
+
+  decompressLZSS(result: FileBuffer): void {
+    try {
+      // This is the C++ code for reference:
+      // uint8_t *data = result->GetCurrent();
+      // The code line underneath does not do the same thing!!
+      // GetCurrent gets the pointer to the current position in the buffer.
+      // const data = result.uint8Array;
+      const data = result.uint8Array.subarray(result.index);
+      let code = 0;
+      let mask = 0;
+      while (!this.atEnd() && !result.atEnd()) {
+        if (!mask) {
+          code = this.getUint8();
+          mask = 0x01;
+        }
+        if (code & mask) {
+          result.putUint8(this.getUint8());
+        } else {
+          const off = this.getUint16LE();
+          const len = this.getUint8() + 5;
+          result.putData(data.subarray(off, off + len), len);
+        }
+        mask <<= 1;
+      }
+      result.rewind();
+    } catch (e: any) {
+      console.error(`Error in decompressLZSS: ${e?.message}`);
+      throw e;
     }
   }
 
@@ -235,24 +272,34 @@ export class FileBuffer {
     return this.index >= this.uint8Array.length;
   }
 
-  // TODO: Havent doublecheced if this is correctly implemented.
-  putData(data: number, n: number): void {
+  // TODO: Havent doublechecked if this is correctly implemented.
+  putData(data: Uint8Array, n: number): void {
     if (this.index + n <= this.uint8Array.length) {
-      this.uint8Array.fill(data, this.index, this.index + n);
+      this.uint8Array.set(data.subarray(0, n), this.index);
       this.index += n;
     } else {
-      throw new Error("BufferFull!");
+      throw new Error(`BufferFull! index: ${this.index} + n: ${n} > ${this.uint8Array.length}`);
     }
   }
 
-  // TODO: Havent doublecheced if this is correctly implemented.
+  // TODO: Havent doublechecked if this is correctly implemented.
+  putDataFill(x: number, n: number): void {
+    if (this.index + n <= this.uint8Array.length) {
+      this.uint8Array.fill(x, this.index, this.index + n);
+      this.index += n;
+    } else {
+      throw new Error(`BufferFull! index: ${this.index} + n: ${n} > ${this.uint8Array.length}`);
+    }
+  }
+
+  // TODO: Havent doublechecked if this is correctly implemented.
   copyFrom(src: FileBuffer, n: number): void {
     if (this.index + n <= this.uint8Array.length) {
       this.uint8Array.set(src.uint8Array.subarray(src.index, src.index + n), this.index);
       this.index += n;
       src.index += n;
     } else {
-      throw new Error("BufferFull!");
+      throw new Error(`BufferFull! index: ${this.index} + n: ${n} > ${this.uint8Array.length}`);
     }
   }
 
