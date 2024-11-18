@@ -237,7 +237,7 @@ export class FileBuffer {
         } else {
           const off = this.getUint16LE();
           const len = this.getUint8() + 5;
-          result.putData(data.subarray(off, off + len), len);
+          result.putData(data.subarray(off), len);
         }
         mask <<= 1;
       }

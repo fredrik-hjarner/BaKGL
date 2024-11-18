@@ -51,7 +51,7 @@ const imagePalettePairs = [
     /////////////////////////////
     { imageFileName: 'BICONS1.BMX', paletteFileName: 'OPTIONS.PAL' },
     { imageFileName: 'BICONS2.BMX', paletteFileName: 'OPTIONS.PAL' },
-    // { imageFileName: 'CASTFACE.BMX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'CASTFACE.BMX', paletteFileName: 'OPTIONS.PAL' },
     { imageFileName: 'COMPASS.BMX', paletteFileName: 'OPTIONS.PAL' },
     { imageFileName: 'ENCAMP.BMX', paletteFileName: 'OPTIONS.PAL' },
     { imageFileName: 'FMAP_ICN.BMX', paletteFileName: 'FULLMAP.PAL' },
@@ -101,9 +101,21 @@ const imagePalettePairs = [
     ...actPairHelper(37, false),
     ...actPairHelper(38, false),
     ...actPairHelper(39, false),
-    ...actPairHelper(40),
-    ...actPairHelper(41),
-    ...actPairHelper(42),
+    ...actPairHelper(40, false),
+    ...actPairHelper(41, false),
+    ...actPairHelper(42, false),
+    ...actPairHelper(43, false),
+    ...actPairHelper(44, false),
+    ...actPairHelper(45, false),
+    ...actPairHelper(46, false),
+    ...actPairHelper(47, false),
+    ...actPairHelper(48, false),
+    ...actPairHelper(49, false),
+    ...actPairHelper(50, false),
+    ...actPairHelper(51, false),
+    ...actPairHelper(52, false),
+    ...actPairHelper(53, false),
+
 
 
 
