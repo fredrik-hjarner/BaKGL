@@ -45,16 +45,19 @@ std::vector<Image> LoadImagesNormal(FileBuffer& fb)
     FileBuffer decompressed = FileBuffer(size);
 
     // Log the fb buffer
-    const uint8_t* buffer = fb.GetBuffer();
-    const size_t bufferSize = fb.GetSize();
-    std::cout << "fb.GetBuffer(): [";
-    for (size_t i = 0; i < bufferSize; ++i)
-    {
-        std::cout << static_cast<int>(buffer[i]);
-        if (i < bufferSize - 1)
-            std::cout << ", ";
-    }
-    std::cout << "]" << std::endl;
+    // const uint8_t* buffer = fb.GetBuffer();
+    // const size_t bufferSize = fb.GetSize();
+    // std::cout << "fb.GetBuffer(): [";
+    // for (size_t i = 0; i < bufferSize; ++i)
+    // {
+    //     std::cout << static_cast<int>(buffer[i]);
+    //     if (i < bufferSize - 1)
+    //         std::cout << ", ";
+    // }
+    // std::cout << "]" << std::endl;
+
+    logger.Info() << "before decompress: decompressed.length: " << decompressed.GetSize() << std::endl;
+    logger.Info() << "before decompress: fb.length: " << fb.GetSize() << std::endl;
 
     fb.Decompress(&decompressed, compression);
     for (unsigned int i = 0; i < numImages; i++)

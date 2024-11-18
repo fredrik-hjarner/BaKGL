@@ -57,7 +57,7 @@ const imagePalettePairs = [
     { imageFileName: 'FMAP_ICN.BMX', paletteFileName: 'FULLMAP.PAL' },
     { imageFileName: 'HEADS.BMX', paletteFileName: 'OPTIONS.PAL' },
     { imageFileName: 'INVLOCK.BMX', paletteFileName: 'OPTIONS.PAL' },
-    // { imageFileName: 'INVMISC.BMX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'INVMISC.BMX', paletteFileName: 'OPTIONS.PAL' },
     { imageFileName: 'INVSHP1.BMX', paletteFileName: 'OPTIONS.PAL' },
     { imageFileName: 'INVSHP2.BMX', paletteFileName: 'OPTIONS.PAL' },
     { imageFileName: 'POINTERG.BMX', paletteFileName: 'OPTIONS.PAL' },
@@ -149,7 +149,7 @@ const dumpBmp = ({ imagesFileName, image, palette, index }: DumpBmpParams) => {
         const color = palette.colors[paletteIndex];
         return [color.r, color.g, color.b];
     });
-    console.log({imageWithColors});
+    // console.log({imageWithColors});
     
     // now use BmpWriter to write to file
     const bmp = BmpWriter.createBmpArray(image.width, image.height, Uint8Array.from(imageWithColors));

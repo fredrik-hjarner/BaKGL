@@ -15,6 +15,7 @@
 #include <sstream>
 
 #include <SDL2/SDL_endian.h>
+#include <bitset>
 
 namespace BAK {
 
@@ -709,11 +710,23 @@ FileBuffer::DecompressLZSS(FileBuffer *result)
 {
     try
     {
+        // log how far result buffer has moved which is result->GetCurrent() - result->mBuffer
+        Logging::LogInfo("FileBuffer") << "DecompressLZSS: result.index: " << (result->GetCurrent() - result->mBuffer) << std::endl;
+        
         uint8_t *data = result->GetCurrent();
         uint8_t code = 0;
         uint8_t mask = 0;
+        unsigned i = 0; // for logging keep track of loop iterations.
         while (!AtEnd() && !result->AtEnd())
         {
+            // log one empty line
+            Logging::LogInfo("FileBuffer") << std::endl;
+            Logging::LogInfo("FileBuffer") << "DecompressLZSS: loop iteration: " << i << std::endl;
+            // log position of both buffers
+            Logging::LogInfo("FileBuffer") << "DecompressLZSS: this.index: " << (GetCurrent() - mBuffer) << std::endl;
+            Logging::LogInfo("FileBuffer") << "DecompressLZSS: result.index: " << (result->GetCurrent() - result->mBuffer) << std::endl;
+            // log mask as a value
+            Logging::LogInfo("FileBuffer") << "DecompressLZSS: mask: " << std::bitset<8>(mask) << std::endl;
             if (!mask)
             {
                 code = GetUint8();
@@ -730,6 +743,7 @@ FileBuffer::DecompressLZSS(FileBuffer *result)
                 result->PutData(data + off, len);
             }
             mask <<= 1;
+            i++;
         }
         unsigned res = result->GetBytesDone();
         result->Rewind();

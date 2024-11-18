@@ -156,7 +156,7 @@ export function loadImagesNormal(fb: FileBuffer): Image[] {
         // Not sure why this is needed or if *2 is the right number
         // TODO: Examine the bahaviour. should be easy to see how much
         // space is needed if I decompress every single image I think.
-        size *= 3;
+        size *= 2;
     }
 
     // FileBuffer decompressed = FileBuffer(size);
@@ -169,8 +169,10 @@ export function loadImagesNormal(fb: FileBuffer): Image[] {
     // }
 
     const decompressedFileBuffer = FileBuffer.createEmpty(size);
-    console.log(`fb.uint8Array: ${fb.uint8Array}`);
-    console.log();
+    // console.log(`fb.uint8Array: ${fb.uint8Array}`);
+    // console.log(`decompressedFileBuffer.uint8Array: ${decompressedFileBuffer.uint8Array}`);
+    console.log(`before decompress: decompressedFileBuffer.length: ${decompressedFileBuffer.uint8Array.length}`);
+    console.log(`before decompress: fb.length: ${fb.uint8Array.length}`);
     fb.decompress(decompressedFileBuffer, compression);
     for (let i = 0; i < numImages; i++) {
         const imageBuffer = FileBuffer.createEmpty(imageSizes[i]);
