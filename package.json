@@ -11,6 +11,7 @@
     // takes 1m55.524s to run
     "ninja": "./build.sh",
     "start": "cd build && ./main3d",
+    "test": "bun test"
   },
   "devDependencies": {
     "@types/bun": "latest"

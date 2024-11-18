@@ -113,3 +113,29 @@ So example of a step might be to take .PAL files and extract then into nice json
 
 #### Resolution
 
+## Move getUint8 and such getters to a separate binary file and unit test them thoroughly.
+
+| Created | Resolved |
+| ----- | --------|
+| 2024-11-18 | 2024-11-18 |
+
+#### Description
+
+I think I want an artifacts or /artifacts folder with subfolders step1, step2, step3, et cetera.
+This would be where the different steps of the content pipeline dumps data. step1 has gameinput, though I could add a step0 that just grabs the relevant game files and dumps the unchanged into .artifacts/step0.
+step{n} is where the output of step{n} is used as input to step{n+1}.
+So example of a step might be to take .PAL files and extract then into nice json files, the step afterwards would have the .PAL files removed and instead "replaced" with the json filess so that the later steps can use the json files. Thus more and more of the original data is removed and replaced with the processed data.
+
+#### Resolution
+
+Yes they are in binary/binary.ts and they have tons of assertions and are thoroughly tested.
+
+## Use and enforce absolute import paths everywhere.
+
+| Created | Resolved |
+| ----- | --------|
+| 2024-11-18 |  |
+
+#### Description
+
+#### Resolution

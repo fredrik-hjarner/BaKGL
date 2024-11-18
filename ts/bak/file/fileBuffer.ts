@@ -1,3 +1,4 @@
+import { getUint16LE, getUint32LE, getUint8 } from "../../binary/binary";
 import type { DataTag } from "../dataTags";
 
 export const COMPRESSION_LZW  = 0;
@@ -63,45 +64,21 @@ export class FileBuffer {
   }
 
   getUint8(): number {
-    // check that the index is in bounds
-    if(this.index >= this.uint8Array.length) {
-      throw new Error(`FileBuffer.getUint8: index: ${this.index} is out of bounds for uint8Array of length: ${this.uint8Array.length}`);
-    }
-    const value: number = this.uint8Array[this.index];
+    const result = getUint8(this.uint8Array, this.index);
     this.index += 1;
-    // >>> 0 to ensure the value is treated as an unsigned 32-bit integer
-    const result = value >>> 0;
-    if(result !== value) {
-      // This is just for debugging really. This check did not exist
-      // in the original code.
-      throw new Error(`FileBuffer.getUint8: value: ${value} and result: ${result} are not the same`);
-    }
     return result;
   }
 
   getUint32LE(): number {
-    // check that the index is in bounds
-    if(this.index + 3 >= this.uint8Array.length) {
-      throw new Error(`FileBuffer.getUint32LE: index: ${this.index} + 3 is out of bounds for uint8Array of length: ${this.uint8Array.length}`);
-    }
-    const value: number = this.uint8Array[this.index] |
-                (this.uint8Array[this.index + 1] << 8) |
-                (this.uint8Array[this.index + 2] << 16) |
-                (this.uint8Array[this.index + 3] << 24);
+    const result = getUint32LE(this.uint8Array, this.index);
     this.index += 4;
-    // >>> 0 to ensure the value is treated as an unsigned 32-bit integer
-    return value >>> 0;
+    return result;
   }
 
   getUint16LE(): number {
-    // check that the index is in bounds
-    if(this.index + 1 >= this.uint8Array.length) {
-      throw new Error(`FileBuffer.getUint16LE: index: ${this.index} + 1 is out of bounds for uint8Array of length: ${this.uint8Array.length}`);
-    }
-    const value: number = this.uint8Array[this.index] | (this.uint8Array[this.index + 1] << 8);
+    const result = getUint16LE(this.uint8Array, this.index);
     this.index += 2;
-    // >>> 0 to ensure the value is treated as an unsigned 32-bit integer
-    return value >>> 0;
+    return result;
   }
 
   getString(length: number): string {
