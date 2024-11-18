@@ -135,6 +135,84 @@ const imagePalettePairs = [
     { imageFileName: 'BRK2.BMX', paletteFileName: 'OPTIONS.PAL' },
     { imageFileName: 'BRK3.BMX', paletteFileName: 'OPTIONS.PAL' },
     // { imageFileName: 'C12B_ARC.BMX', paletteFileName: 'OPTIONS.PAL' },
+
+
+    // Taverns
+    
+
+    // Zones
+    { imageFileName: 'Z01H.BMX', paletteFileName: 'Z01.PAL' },
+    { imageFileName: 'Z01SLOT0.BMX', paletteFileName: 'Z01.PAL' },
+    { imageFileName: 'Z01SLOT1.BMX', paletteFileName: 'Z01.PAL' },
+    { imageFileName: 'Z01SLOT2.BMX', paletteFileName: 'Z01.PAL' },
+    { imageFileName: 'Z01SLOT3.BMX', paletteFileName: 'Z01.PAL' },
+    { imageFileName: 'Z01SLOT4.BMX', paletteFileName: 'Z01.PAL' },
+    { imageFileName: 'Z02H.BMX', paletteFileName: 'Z02.PAL' },
+    { imageFileName: 'Z02SLOT0.BMX', paletteFileName: 'Z02.PAL' },
+    { imageFileName: 'Z02SLOT1.BMX', paletteFileName: 'Z02.PAL' },
+    { imageFileName: 'Z02SLOT2.BMX', paletteFileName: 'Z02.PAL' },
+    { imageFileName: 'Z02SLOT3.BMX', paletteFileName: 'Z02.PAL' },
+    { imageFileName: 'Z02SLOT4.BMX', paletteFileName: 'Z02.PAL' },
+    { imageFileName: 'Z03H.BMX', paletteFileName: 'Z03.PAL' },
+    { imageFileName: 'Z03SLOT0.BMX', paletteFileName: 'Z03.PAL' },
+    { imageFileName: 'Z03SLOT1.BMX', paletteFileName: 'Z03.PAL' },
+    { imageFileName: 'Z03SLOT2.BMX', paletteFileName: 'Z03.PAL' },
+    { imageFileName: 'Z03SLOT3.BMX', paletteFileName: 'Z03.PAL' },
+    { imageFileName: 'Z03SLOT4.BMX', paletteFileName: 'Z03.PAL' },
+    { imageFileName: 'Z04H.BMX', paletteFileName: 'Z04.PAL' },
+    { imageFileName: 'Z04SLOT0.BMX', paletteFileName: 'Z04.PAL' },
+    { imageFileName: 'Z04SLOT1.BMX', paletteFileName: 'Z04.PAL' },
+    { imageFileName: 'Z04SLOT2.BMX', paletteFileName: 'Z04.PAL' },
+    { imageFileName: 'Z04SLOT3.BMX', paletteFileName: 'Z04.PAL' },
+    { imageFileName: 'Z04SLOT4.BMX', paletteFileName: 'Z04.PAL' },
+    { imageFileName: 'Z05H.BMX', paletteFileName: 'Z05.PAL' },
+    { imageFileName: 'Z05SLOT0.BMX', paletteFileName: 'Z05.PAL' },
+    { imageFileName: 'Z05SLOT1.BMX', paletteFileName: 'Z05.PAL' },
+    { imageFileName: 'Z05SLOT2.BMX', paletteFileName: 'Z05.PAL' },
+    { imageFileName: 'Z05SLOT3.BMX', paletteFileName: 'Z05.PAL' },
+    { imageFileName: 'Z05SLOT4.BMX', paletteFileName: 'Z05.PAL' },
+    { imageFileName: 'Z06H.BMX', paletteFileName: 'Z06.PAL' },
+    { imageFileName: 'Z06SLOT0.BMX', paletteFileName: 'Z06.PAL' },
+    { imageFileName: 'Z06SLOT1.BMX', paletteFileName: 'Z06.PAL' },
+    { imageFileName: 'Z06SLOT2.BMX', paletteFileName: 'Z06.PAL' },
+    { imageFileName: 'Z06SLOT3.BMX', paletteFileName: 'Z06.PAL' },
+    { imageFileName: 'Z06SLOT4.BMX', paletteFileName: 'Z06.PAL' },
+    { imageFileName: 'Z07H.BMX', paletteFileName: 'Z07.PAL' },
+    { imageFileName: 'Z07SLOT0.BMX', paletteFileName: 'Z07.PAL' },
+    { imageFileName: 'Z07SLOT1.BMX', paletteFileName: 'Z07.PAL' },
+    { imageFileName: 'Z07SLOT2.BMX', paletteFileName: 'Z07.PAL' },
+    { imageFileName: 'Z07SLOT3.BMX', paletteFileName: 'Z07.PAL' },
+    { imageFileName: 'Z07SLOT4.BMX', paletteFileName: 'Z07.PAL' },
+    { imageFileName: 'Z08SLOT0.BMX', paletteFileName: 'Z08.PAL' },
+    { imageFileName: 'Z08SLOT1.BMX', paletteFileName: 'Z08.PAL' },
+    { imageFileName: 'Z08SLOT2.BMX', paletteFileName: 'Z08.PAL' },
+    { imageFileName: 'Z08SLOT3.BMX', paletteFileName: 'Z08.PAL' },
+    { imageFileName: 'Z08SLOT4.BMX', paletteFileName: 'Z08.PAL' },
+    { imageFileName: 'Z09SLOT0.BMX', paletteFileName: 'Z09.PAL' },
+    { imageFileName: 'Z09SLOT1.BMX', paletteFileName: 'Z09.PAL' },
+    { imageFileName: 'Z09SLOT2.BMX', paletteFileName: 'Z09.PAL' },
+    { imageFileName: 'Z09SLOT3.BMX', paletteFileName: 'Z09.PAL' },
+    { imageFileName: 'Z09SLOT4.BMX', paletteFileName: 'Z09.PAL' },
+    { imageFileName: 'Z10SLOT0.BMX', paletteFileName: 'Z10.PAL' },
+    { imageFileName: 'Z10SLOT1.BMX', paletteFileName: 'Z10.PAL' },
+    { imageFileName: 'Z10SLOT2.BMX', paletteFileName: 'Z10.PAL' },
+    { imageFileName: 'Z10SLOT3.BMX', paletteFileName: 'Z10.PAL' },
+    { imageFileName: 'Z10SLOT4.BMX', paletteFileName: 'Z10.PAL' },
+    { imageFileName: 'Z10SLOT5.BMX', paletteFileName: 'Z10.PAL' },
+    { imageFileName: 'Z11SLOT0.BMX', paletteFileName: 'Z11.PAL' },
+    { imageFileName: 'Z11SLOT1.BMX', paletteFileName: 'Z11.PAL' },
+    { imageFileName: 'Z11SLOT2.BMX', paletteFileName: 'Z11.PAL' },
+    { imageFileName: 'Z11SLOT3.BMX', paletteFileName: 'Z11.PAL' },
+    { imageFileName: 'Z11SLOT4.BMX', paletteFileName: 'Z11.PAL' },
+    { imageFileName: 'Z11SLOT5.BMX', paletteFileName: 'Z11.PAL' },
+    { imageFileName: 'Z11SLOT6.BMX', paletteFileName: 'Z11.PAL' },
+    { imageFileName: 'Z12SLOT0.BMX', paletteFileName: 'Z12.PAL' },
+    { imageFileName: 'Z12SLOT1.BMX', paletteFileName: 'Z12.PAL' },
+    { imageFileName: 'Z12SLOT2.BMX', paletteFileName: 'Z12.PAL' },
+    { imageFileName: 'Z12SLOT3.BMX', paletteFileName: 'Z12.PAL' },
+    { imageFileName: 'Z12SLOT4.BMX', paletteFileName: 'Z12.PAL' },
+    { imageFileName: 'Z12SLOT5.BMX', paletteFileName: 'Z12.PAL' },
+    { imageFileName: 'Z12SLOT6.BMX', paletteFileName: 'Z12.PAL' },
 ];
 
 type DumpBmpParams = {
@@ -156,7 +234,10 @@ const dumpBmp = ({ imagesFileName, image, palette, index }: DumpBmpParams) => {
     Bun.write(`${extractedDataPath}/step2/BMX/${imagesFileName.replace('.BMX', '')}_${index}.BMX.bmp`, bmp);
 }
 
-const dumpAllBmp = async () => {
+const dumpAllBmp = async (cleanFirst: boolean = false) => {
+    if (cleanFirst) {
+        throw new Error('Not implemented');
+    }
     for (const {imageFileName, paletteFileName} of imagePalettePairs) {
         const images = await loadImages(imageFileName);
         const palette = await loadPalette(paletteFileName);
@@ -168,5 +249,5 @@ const dumpAllBmp = async () => {
 }
 
 export const experiment = async () => {
-    await dumpAllBmp();
+    await dumpAllBmp(false);
 }
