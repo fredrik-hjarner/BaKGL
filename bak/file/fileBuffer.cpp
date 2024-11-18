@@ -866,6 +866,7 @@ FileBuffer::Rewind()
     mCurrent = mBuffer;
 }
 
+// Really at what index it as in the buffer?
 unsigned
 FileBuffer::Tell()
 {

@@ -1,116 +1,8 @@
-// #pragma once
-
-// #include "bak/image.hpp"
-
-// #include "bak/fileBufferFactory.hpp"
-
-// namespace BAK {
-
-// std::vector<Image> LoadImages(FileBuffer& fb);
-
-// }
-
-// #include "bak/imageStore.hpp"
-// #include "bak/dataTags.hpp"
-
-// #include "com/logger.hpp"
-
-// #include <iostream>
-
-// namespace BAK {
-
-// std::vector<Image> LoadImagesNormal(FileBuffer& fb)
-// {
-//     std::vector<Image> images{};
-
-//     const unsigned compression = fb.GetUint16LE();
-//     const unsigned numImages = fb.GetUint16LE();
-
-//     std::vector<unsigned> imageSizes{};
-//     fb.Skip(2);
-//     unsigned int size = fb.GetUint32LE();
-//     for (unsigned i = 0; i < numImages; i++)
-//     {
-//         imageSizes.emplace_back(fb.GetUint16LE());
-//         unsigned flags = fb.GetUint16LE();
-//         unsigned width = fb.GetUint16LE();
-//         unsigned height = fb.GetUint16LE();
-//         images.emplace_back(width, height, flags, false);
-//     }
-
-//     if (compression == 1)
-//     {
-//         // Not sure why this is needed or if *2 is the right number
-//         size *= 2;
-//     }
-
-//     FileBuffer decompressed = FileBuffer(size);
-//     fb.Decompress(&decompressed, compression);
-//     for (unsigned int i = 0; i < numImages; i++)
-//     {
-//         auto imageBuffer = FileBuffer(imageSizes[i]);
-//         imageBuffer.Fill(&decompressed);
-//         images[i].Load(&imageBuffer);
-//     }
-
-//     return images;
-// }
-
-// std::vector<Image> LoadImagesTagged(FileBuffer& fb)
-// {
-//     auto infBuf = fb.Find(DataTag::INF);
-
-//     std::vector<Image> images{};
-//     unsigned imageCount = infBuf.GetUint16LE();
-//     for (unsigned i = 0; i < imageCount; i++)
-//     {
-//         const auto width = infBuf.GetUint16LE();
-//         const auto start = infBuf.Tell();
-//         infBuf.Skip(2 * (imageCount - 1));
-//         const auto height = infBuf.GetUint16LE();
-//         infBuf.Seek(start);
-//         images.emplace_back(width, height, 0, true);
-//     }
-
-//     auto binBuf = fb.Find(DataTag::BIN);
-//     auto compression = binBuf.GetUint8();
-//     auto size = binBuf.GetUint32LE();
-//     FileBuffer decompressed = FileBuffer(size);
-//     auto decompressedBytes = binBuf.DecompressLZW(&decompressed);
-//     for (unsigned i = 0; i < imageCount; i++)
-//     {
-//         images[i].Load(&decompressed);
-//     }
-
-//     return images;
-// }
-
-// std::vector<Image> LoadImages(FileBuffer& fb)
-// {
-//     const auto imageType = fb.GetUint16LE();
-//     if (imageType == 0x1066)
-//     {
-//         return LoadImagesNormal(fb);
-//     }
-//     else if (imageType == 0x4d42)
-//     {
-//         return LoadImagesTagged(fb);
-//     }
-//     else
-//     {
-//         throw std::runtime_error("Couldn't load images");
-//         return std::vector<Image>{};
-//     }
-// }
-
-// }
-
-// IMPORTANT: The code above is from c++ project and just for reference. I want to create a typescript version below.
-
 import { FileBuffer } from "./file/fileBuffer.ts";
 import { extractedDataPath } from "../consts.ts";
 import { COMPRESSION_LZSS } from "./file/fileBuffer.ts";
 import { Image } from "./image.ts";
+import { DataTag } from "./dataTags.ts";
 
 function log(message: string) {
     console.log(`[imageStore.ts/loadImages] ${message}`);
@@ -199,9 +91,46 @@ export async function loadImages(resourceFile: string): Promise<Image[]> {
 
     if (imageType === 0x1066) {
         return loadImagesNormal(fb);
-    // } else if (imageType === 0x4d42) {
-    //     return loadImagesTagged(resourceFile);
+    } else if (imageType === 0x4d42) {
+        return loadImagesTagged(fb);
     } else {
         throw new Error(`Couldn't load images`);
     }
 }
+
+export function loadImagesTagged(fb: FileBuffer): Image[] {
+    const infBuf = fb.find(DataTag.INF);
+    const images: Image[] = [];
+    
+    const imageCount = infBuf.getUint16LE();
+    console.log(`loadImagesTagged:Image count: ${imageCount}`);
+    
+    for (let i = 0; i < imageCount; i++) {
+        const width = infBuf.getUint16LE();
+        const start = infBuf.index;
+        infBuf.skip(2 * (imageCount - 1));
+        const height = infBuf.getUint16LE();
+        infBuf.jumpToIndex(start);
+        
+        images.push(new Image({
+            width,
+            height,
+            flags: 0,
+            isHighResLowCol: true
+        }));
+    }
+
+    const binBuf = fb.find(DataTag.BIN);
+    const compression = binBuf.getUint8();
+    const size = binBuf.getUint32LE();
+    
+    const decompressed = FileBuffer.createEmpty(size);
+    binBuf.decompressLZW(decompressed);
+    
+    for (let i = 0; i < imageCount; i++) {
+        images[i].load(decompressed);
+    }
+
+    return images;
+}
+

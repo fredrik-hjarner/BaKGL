@@ -7,7 +7,7 @@ export const COMPRESSION_RLE  = 2;
 
 export class FileBuffer {
   public uint8Array: Uint8Array;
-  private index: number = 0;
+  public index: number = 0;
   private nextBit: number = 0;
 
   constructor(uint8Array: Uint8Array) {
@@ -92,8 +92,7 @@ export class FileBuffer {
     return string;
   }
 
-  // TODO: rename to setOffset?
-  seek(offset: number): void {
+  jumpToIndex(offset: number): void {
     this.index = offset;
   }
 
@@ -323,6 +322,7 @@ export class FileBuffer {
     this.index = 0;
   }
 
+  // TODO: I should prolly move this function too and make unit tests for it.
   find(tag: DataTag): FileBuffer {
     let search = this.uint8Array;
     for (let i = 0; i < this.uint8Array.length - 4; i++) {

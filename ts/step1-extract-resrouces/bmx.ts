@@ -129,7 +129,7 @@ const imagePalettePairs = [
     // BMX with unknown palettes //
     ///////////////////////////////
 
-    // { imageFileName: 'BOOK.BMX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'BOOK.BMX', paletteFileName: 'BOOK.PAL' }, // book must have book palette, right?
     { imageFileName: 'BOOM.BMX', paletteFileName: 'OPTIONS.PAL' },
     { imageFileName: 'BRK1.BMX', paletteFileName: 'OPTIONS.PAL' },
     { imageFileName: 'BRK2.BMX', paletteFileName: 'OPTIONS.PAL' },

@@ -11,7 +11,7 @@ const subBuffers: Map<string, FileBuffer> = new Map();
 // Iterate over the resource index data and fetch the corresponding data from the packed resource file
 for (const resource of packedResourceFile.resourceIndexData) {
   const { hashKey, offset } = resource;
-  packedResource.seek(offset);
+  packedResource.jumpToIndex(offset);
   // trim I hope removes /0s that are there if name < 13 chars.
   const resourceName = packedResource.getString(13).trim();
   const resourceSize = packedResource.getUint32LE();
