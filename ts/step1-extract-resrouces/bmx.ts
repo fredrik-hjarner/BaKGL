@@ -61,7 +61,6 @@ const imagePalettePairs = [
     { imageFileName: 'INVSHP1.BMX', paletteFileName: 'OPTIONS.PAL' },
     { imageFileName: 'INVSHP2.BMX', paletteFileName: 'OPTIONS.PAL' },
     { imageFileName: 'POINTERG.BMX', paletteFileName: 'OPTIONS.PAL' },
-    { imageFileName: 'TELEPORT.BMX', paletteFileName: 'TELEPORT.PAL' },
     ...actPairHelper(1),
     ...actPairHelper(2),
     ...actPairHelper(3),
@@ -116,29 +115,47 @@ const imagePalettePairs = [
     ...actPairHelper(52, false),
     ...actPairHelper(53, false),
 
-
-
-
-
-
-
-
-
-
-    ///////////////////////////////
-    // BMX with unknown palettes //
-    ///////////////////////////////
-
-    { imageFileName: 'BOOK.BMX', paletteFileName: 'BOOK.PAL' }, // book must have book palette, right?
-    { imageFileName: 'BOOM.BMX', paletteFileName: 'OPTIONS.PAL' },
-    { imageFileName: 'BRK1.BMX', paletteFileName: 'OPTIONS.PAL' },
-    { imageFileName: 'BRK2.BMX', paletteFileName: 'OPTIONS.PAL' },
-    { imageFileName: 'BRK3.BMX', paletteFileName: 'OPTIONS.PAL' },
-    // { imageFileName: 'C12B_ARC.BMX', paletteFileName: 'OPTIONS.PAL' },
-
-
-    // Taverns
+    // Chapters (CXX)
     
+
+    // Shops
+    { imageFileName: 'SHOP1.BMX', paletteFileName: 'SHOP1.PAL' },
+    { imageFileName: 'SHOP1ARM.BMX', paletteFileName: 'SHOP1.PAL' },
+    { imageFileName: 'SHOP1BAK.BMX', paletteFileName: 'SHOP1.PAL' },
+    { imageFileName: 'SHOP2.BMX', paletteFileName: 'SHOP2.PAL' },
+    { imageFileName: 'SHOP2ARM.BMX', paletteFileName: 'SHOP2.PAL' },
+    { imageFileName: 'SHOP2BAK.BMX', paletteFileName: 'SHOP2.PAL' },
+    { imageFileName: 'SHOP3.BMX', paletteFileName: 'SHOP3.PAL' },
+    { imageFileName: 'SHOP3ARM.BMX', paletteFileName: 'SHOP3.PAL' },
+    { imageFileName: 'SHOP3BAK.BMX', paletteFileName: 'SHOP3.PAL' },
+    { imageFileName: 'SHOP4.BMX', paletteFileName: 'SHOP4.PAL' },
+    
+    // SPI
+    
+    // SPL
+    
+    // Temple
+    { imageFileName: 'TEMPLE.BMX', paletteFileName: 'TEMPLE.PAL' },
+
+    // Teleport
+    { imageFileName: 'TELEPORT.BMX', paletteFileName: 'TELEPORT.PAL' },
+    
+    // Taverns
+    { imageFileName: 'TVRN1.BMX', paletteFileName: 'TVRN1.PAL' },
+    { imageFileName: 'TVRN1BAK.BMX', paletteFileName: 'TVRN1.PAL' },
+    { imageFileName: 'TVRN1PPL.BMX', paletteFileName: 'TVRN1.PAL' },
+    { imageFileName: 'TVRN2.BMX', paletteFileName: 'TVRN2.PAL' },
+    { imageFileName: 'TVRN2BAK.BMX', paletteFileName: 'TVRN2.PAL' },
+    { imageFileName: 'TVRN2PPL.BMX', paletteFileName: 'TVRN2.PAL' },
+    { imageFileName: 'TVRN3.BMX', paletteFileName: 'TVRN3.PAL' },
+    { imageFileName: 'TVRN3BAK.BMX', paletteFileName: 'TVRN3.PAL' },
+    { imageFileName: 'TVRN3PPL.BMX', paletteFileName: 'TVRN3.PAL' },
+    { imageFileName: 'TVRN4.BMX', paletteFileName: 'TVRN4.PAL' },
+    { imageFileName: 'TVRN4BAK.BMX', paletteFileName: 'TVRN4.PAL' },
+    { imageFileName: 'TVRN4PPL.BMX', paletteFileName: 'TVRN4.PAL' },
+    { imageFileName: 'TVRN5.BMX', paletteFileName: 'TVRN5.PAL' },
+    { imageFileName: 'TVRN5BAK.BMX', paletteFileName: 'TVRN5.PAL' },
+    { imageFileName: 'TVRN5PPL.BMX', paletteFileName: 'TVRN5.PAL' },
 
     // Zones
     { imageFileName: 'Z01H.BMX', paletteFileName: 'Z01.PAL' },
@@ -213,6 +230,17 @@ const imagePalettePairs = [
     { imageFileName: 'Z12SLOT4.BMX', paletteFileName: 'Z12.PAL' },
     { imageFileName: 'Z12SLOT5.BMX', paletteFileName: 'Z12.PAL' },
     { imageFileName: 'Z12SLOT6.BMX', paletteFileName: 'Z12.PAL' },
+
+    ///////////////////////////////
+    // BMX with unknown palettes //
+    ///////////////////////////////
+
+    { imageFileName: 'BOOK.BMX', paletteFileName: 'BOOK.PAL' }, // book must have book palette, right?
+    { imageFileName: 'BOOM.BMX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'BRK1.BMX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'BRK2.BMX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'BRK3.BMX', paletteFileName: 'OPTIONS.PAL' },
+    // { imageFileName: 'C12B_ARC.BMX', paletteFileName: 'OPTIONS.PAL' },
 ];
 
 type DumpBmpParams = {

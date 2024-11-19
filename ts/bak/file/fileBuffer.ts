@@ -105,7 +105,7 @@ export class FileBuffer {
 
   // decompresses this buffer and put it on the result buffer on argument.
   decompressLZW(result: FileBuffer) {
-    console.log(`decompressLZW: fb.uint8Array.length: ${result.uint8Array.length}`);
+    // console.log(`decompressLZW: fb.uint8Array.length: ${result.uint8Array.length}`);
     try {
       const codetable: { prefix: number; append: number }[] = new Array(4096);
       const decodestack: number[] = new Array(4096);
@@ -154,7 +154,7 @@ export class FileBuffer {
       }
       result.rewind();
 
-      console.log(`decompressLZW: result.uint8Array: ${result.uint8Array}`);
+      // console.log(`decompressLZW: result.uint8Array: ${result.uint8Array}`);
     } catch (e: any) {
       console.error(`Error in decompressLZW: ${e?.message}`);
       throw e;
@@ -228,13 +228,13 @@ export class FileBuffer {
       let mask = 0;
       let i = 0; // for logging keep track of loop iterations.
       while (!this.atEnd() && !result.atEnd()) {
-        console.log();
-        console.log(`decompressLZSS: loop iteration: ${i}`);
+        // console.log();
+        // console.log(`decompressLZSS: loop iteration: ${i}`);
         // log position of both buffers
-        console.log(`decompressLZSS: this.index: ${this.index}`);
-        console.log(`decompressLZSS: result.index: ${result.index}`);
+        // console.log(`decompressLZSS: this.index: ${this.index}`);
+        // console.log(`decompressLZSS: result.index: ${result.index}`);
         // log mask as binary value, I mean really binary.
-        console.log(`decompressLZSS: mask: ${mask.toString(2).padStart(8, '0')}`);
+        // console.log(`decompressLZSS: mask: ${mask.toString(2).padStart(8, '0')}`);
         if (!mask) {
           code = this.getUint8();
           mask = 0x01;
