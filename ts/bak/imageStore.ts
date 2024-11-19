@@ -5,7 +5,7 @@ import { Image } from "./image.ts";
 import { DataTag } from "./dataTags.ts";
 
 function log(message: string) {
-    console.log(`[imageStore.ts/loadImages] ${message}`);
+    // console.log(`[imageStore.ts/loadImages] ${message}`);
 }
 
 // loads images from a *.BMX file. (maybe from other files???)
@@ -63,8 +63,8 @@ export function loadImagesNormal(fb: FileBuffer): Image[] {
     const decompressedFileBuffer = FileBuffer.createEmpty(size);
     // console.log(`fb.uint8Array: ${fb.uint8Array}`);
     // console.log(`decompressedFileBuffer.uint8Array: ${decompressedFileBuffer.uint8Array}`);
-    console.log(`before decompress: decompressedFileBuffer.length: ${decompressedFileBuffer.uint8Array.length}`);
-    console.log(`before decompress: fb.length: ${fb.uint8Array.length}`);
+    // console.log(`before decompress: decompressedFileBuffer.length: ${decompressedFileBuffer.uint8Array.length}`);
+    // console.log(`before decompress: fb.length: ${fb.uint8Array.length}`);
     fb.decompress(decompressedFileBuffer, compression);
     for (let i = 0; i < numImages; i++) {
         const imageBuffer = FileBuffer.createEmpty(imageSizes[i]);

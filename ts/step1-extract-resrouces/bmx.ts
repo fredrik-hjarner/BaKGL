@@ -4,98 +4,69 @@ import { BmpWriter } from '../bmp.ts';
 import { loadPalette, type Palette } from './pal.ts';
 import { extractedDataPath } from '../consts.ts';
 
-// await extractPalettesToJson();
+const actors = [
+    { imageFileName: "ACT001.BMX", paletteFileName: "ACT001.PAL" },
+    { imageFileName: "ACT001A.BMX", paletteFileName: "ACT001.PAL" },
+    { imageFileName: "ACT002.BMX", paletteFileName: "ACT002.PAL" },
+    { imageFileName: "ACT002A.BMX", paletteFileName: "ACT002.PAL" },
+    { imageFileName: "ACT003.BMX", paletteFileName: "ACT003.PAL" },
+    { imageFileName: "ACT003A.BMX", paletteFileName: "ACT003.PAL" },
+    { imageFileName: "ACT004.BMX", paletteFileName: "ACT004.PAL" },
+    { imageFileName: "ACT004A.BMX", paletteFileName: "ACT004.PAL" },
+    { imageFileName: "ACT005.BMX", paletteFileName: "ACT005.PAL" },
+    { imageFileName: "ACT005A.BMX", paletteFileName: "ACT005.PAL" },
+    { imageFileName: "ACT006.BMX", paletteFileName: "ACT006.PAL" },
+    { imageFileName: "ACT006A.BMX", paletteFileName: "ACT006.PAL" },
+    { imageFileName: "ACT007.BMX", paletteFileName: "ACT007.PAL" },
+    { imageFileName: "ACT008.BMX", paletteFileName: "ACT008.PAL" },
+    { imageFileName: "ACT009A.BMX", paletteFileName: "ACT009.PAL" },
+    { imageFileName: "ACT010.BMX", paletteFileName: "ACT010.PAL" },
+    { imageFileName: "ACT011.BMX", paletteFileName: "ACT011.PAL" },
+    { imageFileName: "ACT012A.BMX", paletteFileName: "ACT012.PAL" },
+    { imageFileName: "ACT013.BMX", paletteFileName: "ACT013.PAL" },
+    { imageFileName: "ACT014.BMX", paletteFileName: "ACT014.PAL" },
+    { imageFileName: "ACT015.BMX", paletteFileName: "ACT015.PAL" },
+    { imageFileName: "ACT016.BMX", paletteFileName: "ACT016.PAL" },
+    { imageFileName: "ACT017.BMX", paletteFileName: "ACT017.PAL" },
+    { imageFileName: "ACT018A.BMX", paletteFileName: "ACT018.PAL" },
+    { imageFileName: "ACT019.BMX", paletteFileName: "ACT019.PAL" },
+    { imageFileName: "ACT020.BMX", paletteFileName: "ACT020.PAL" },
+    { imageFileName: "ACT021.BMX", paletteFileName: "ACT021.PAL" },
+    { imageFileName: "ACT022.BMX", paletteFileName: "ACT022.PAL" },
+    { imageFileName: "ACT023.BMX", paletteFileName: "ACT023.PAL" },
+    { imageFileName: "ACT024.BMX", paletteFileName: "ACT024.PAL" },
+    { imageFileName: "ACT025.BMX", paletteFileName: "ACT025.PAL" },
+    { imageFileName: "ACT026.BMX", paletteFileName: "ACT026.PAL" },
+    { imageFileName: "ACT027.BMX", paletteFileName: "ACT027.PAL" },
+    { imageFileName: "ACT028.BMX", paletteFileName: "ACT028.PAL" },
+    { imageFileName: "ACT029.BMX", paletteFileName: "ACT029.PAL" },
+    { imageFileName: "ACT030A.BMX", paletteFileName: "ACT030.PAL" },
+    { imageFileName: "ACT031.BMX", paletteFileName: "ACT031.PAL" },
+    { imageFileName: "ACT032.BMX", paletteFileName: "ACT032.PAL" },
+    { imageFileName: "ACT033.BMX", paletteFileName: "ACT033.PAL" },
+    { imageFileName: "ACT034.BMX", paletteFileName: "ACT034.PAL" },
+    { imageFileName: "ACT035.BMX", paletteFileName: "ACT035.PAL" },
+    { imageFileName: "ACT036.BMX", paletteFileName: "ACT036.PAL" },
+    { imageFileName: "ACT037.BMX", paletteFileName: "ACT037.PAL" },
+    { imageFileName: "ACT038.BMX", paletteFileName: "ACT038.PAL" },
+    { imageFileName: "ACT039.BMX", paletteFileName: "ACT039.PAL" },
+    { imageFileName: "ACT040.BMX", paletteFileName: "ACT040.PAL" },
+    { imageFileName: "ACT041.BMX", paletteFileName: "ACT041.PAL" },
+    { imageFileName: "ACT042.BMX", paletteFileName: "ACT042.PAL" },
+    { imageFileName: "ACT043.BMX", paletteFileName: "ACT043.PAL" },
+    { imageFileName: "ACT044.BMX", paletteFileName: "ACT044.PAL" },
+    { imageFileName: "ACT045.BMX", paletteFileName: "ACT045.PAL" },
+    { imageFileName: "ACT046.BMX", paletteFileName: "ACT046.PAL" },
+    { imageFileName: "ACT047.BMX", paletteFileName: "ACT047.PAL" },
+    { imageFileName: "ACT048.BMX", paletteFileName: "ACT048.PAL" },
+    { imageFileName: "ACT049.BMX", paletteFileName: "ACT049.PAL" },
+    { imageFileName: "ACT050.BMX", paletteFileName: "ACT050.PAL" },
+    { imageFileName: "ACT051.BMX", paletteFileName: "ACT051.PAL" },
+    { imageFileName: "ACT052.BMX", paletteFileName: "ACT052.PAL" },
+    { imageFileName: "ACT053.BMX", paletteFileName: "ACT053.PAL" },
+];
 
-// because there are so many ACT (ACTOR) files, we need a helper to create the pairs.
-const actPairHelper = (actIndex: number, a: boolean = true, onlyA: boolean = false) => {
-    const paddedIndex = actIndex.toString().padStart(3, '0');
-    const result = [];
-    if (!onlyA) {
-        result.push({
-            imageFileName: `ACT${paddedIndex}.BMX`,
-            paletteFileName: `ACT${paddedIndex}.PAL`,
-        });
-    }
-    if (a) {
-        result.push({
-            imageFileName: `ACT${paddedIndex}A.BMX`,
-            paletteFileName: `ACT${paddedIndex}.PAL`,
-        });
-    }
-    return result;
-}
-
-const imagePalettePairs = [
-    /////////////////////////////
-    // BMX with known palettes //
-    /////////////////////////////
-    { imageFileName: 'BICONS1.BMX', paletteFileName: 'OPTIONS.PAL' },
-    { imageFileName: 'BICONS2.BMX', paletteFileName: 'OPTIONS.PAL' },
-    { imageFileName: 'CASTFACE.BMX', paletteFileName: 'OPTIONS.PAL' },
-    { imageFileName: 'COMPASS.BMX', paletteFileName: 'OPTIONS.PAL' },
-    { imageFileName: 'ENCAMP.BMX', paletteFileName: 'OPTIONS.PAL' },
-    { imageFileName: 'FMAP_ICN.BMX', paletteFileName: 'FULLMAP.PAL' },
-    { imageFileName: 'HEADS.BMX', paletteFileName: 'OPTIONS.PAL' },
-    { imageFileName: 'INVLOCK.BMX', paletteFileName: 'OPTIONS.PAL' },
-    { imageFileName: 'INVMISC.BMX', paletteFileName: 'OPTIONS.PAL' },
-    { imageFileName: 'INVSHP1.BMX', paletteFileName: 'OPTIONS.PAL' },
-    { imageFileName: 'INVSHP2.BMX', paletteFileName: 'OPTIONS.PAL' },
-    { imageFileName: 'POINTERG.BMX', paletteFileName: 'OPTIONS.PAL' },
-    ...actPairHelper(1),
-    ...actPairHelper(2),
-    ...actPairHelper(3),
-    ...actPairHelper(4),
-    ...actPairHelper(5),
-    ...actPairHelper(6),
-    ...actPairHelper(7, false),
-    ...actPairHelper(8, false),
-    ...actPairHelper(9, true, true),
-    ...actPairHelper(10, false),
-    ...actPairHelper(11, false),
-    ...actPairHelper(12, true, true),
-    ...actPairHelper(13, false),
-    ...actPairHelper(14, false),
-    ...actPairHelper(15, false),
-    ...actPairHelper(16, false),
-    ...actPairHelper(17, false),
-    ...actPairHelper(18, true, true),
-    ...actPairHelper(19, false),
-    ...actPairHelper(20, false),
-    ...actPairHelper(21, false),
-    ...actPairHelper(22, false),
-    ...actPairHelper(23, false),
-    ...actPairHelper(24, false),
-    ...actPairHelper(25, false),
-    ...actPairHelper(26, false),
-    ...actPairHelper(27, false),
-    ...actPairHelper(28, false),
-    ...actPairHelper(29, false),
-    ...actPairHelper(30, true, true),
-    ...actPairHelper(31, false),
-    ...actPairHelper(32, false),
-    ...actPairHelper(33, false),
-    ...actPairHelper(34, false),
-    ...actPairHelper(35, false),
-    ...actPairHelper(36, false),
-    ...actPairHelper(37, false),
-    ...actPairHelper(38, false),
-    ...actPairHelper(39, false),
-    ...actPairHelper(40, false),
-    ...actPairHelper(41, false),
-    ...actPairHelper(42, false),
-    ...actPairHelper(43, false),
-    ...actPairHelper(44, false),
-    ...actPairHelper(45, false),
-    ...actPairHelper(46, false),
-    ...actPairHelper(47, false),
-    ...actPairHelper(48, false),
-    ...actPairHelper(49, false),
-    ...actPairHelper(50, false),
-    ...actPairHelper(51, false),
-    ...actPairHelper(52, false),
-    ...actPairHelper(53, false),
-
-    // Chapters (CXX)
+const chapters = [
     { imageFileName: 'C11A1.BMX', paletteFileName: 'C11A.PAL' },
     { imageFileName: 'C11A2.BMX', paletteFileName: 'C11A.PAL' },
     { imageFileName: 'C11B.BMX', paletteFileName: 'C11B.PAL' },
@@ -105,18 +76,18 @@ const imagePalettePairs = [
     { imageFileName: 'C12A_PUG.BMX', paletteFileName: 'C12A.PAL' },
     { imageFileName: 'C12B_ARC.BMX', paletteFileName: 'C12B.PAL' },
     { imageFileName: 'C12B_GOR.BMX', paletteFileName: 'C12B.PAL' },
-    { imageFileName: 'C12B_SRL.BMX', paletteFileName: 'C12B.PAL' },
-    // { imageFileName: 'C21A.BMX', paletteFileName: 'C21A.PAL' },
-    // { imageFileName: 'C21A_BAK.BMX', paletteFileName: 'C21A.PAL' },
-    // { imageFileName: 'C21B1.BMX', paletteFileName: 'C21B.PAL' },
-    // { imageFileName: 'C21C.BMX', paletteFileName: 'C21C.PAL' },
-    // { imageFileName: 'C21_MAK.BMX', paletteFileName: 'C21_.PAL' },
-    // { imageFileName: 'C22.BMX', paletteFileName: 'C22..PAL' },
-    // { imageFileName: 'C31A_BAK.BMX', paletteFileName: 'C31A.PAL' },
-    // { imageFileName: 'C31A_JIM.BMX', paletteFileName: 'C31A.PAL' },
-    // { imageFileName: 'C31A_PYR.BMX', paletteFileName: 'C31A.PAL' },
-    // { imageFileName: 'C31B_BAK.BMX', paletteFileName: 'C31B.PAL' },
-    // { imageFileName: 'C31B_GOR.BMX', paletteFileName: 'C31B.PAL' },
+    { imageFileName: 'C12B_SRL.BMX', paletteFileName: 'C12A.PAL' },
+    { imageFileName: 'C21A.BMX', paletteFileName: 'C21.PAL' },
+    { imageFileName: 'C21A_BAK.BMX', paletteFileName: 'C21.PAL' },
+    { imageFileName: 'C21B1.BMX', paletteFileName: 'C21.PAL' },
+    { imageFileName: 'C21C.BMX', paletteFileName: 'C21.PAL' },
+    { imageFileName: 'C21_MAK.BMX', paletteFileName: 'C21.PAL' },
+    { imageFileName: 'C22.BMX', paletteFileName: 'C22.PAL' },
+    { imageFileName: 'C31A_BAK.BMX', paletteFileName: 'C31.PAL' },
+    { imageFileName: 'C31A_JIM.BMX', paletteFileName: 'C31.PAL' },
+    { imageFileName: 'C31A_PYR.BMX', paletteFileName: 'C31.PAL' },
+    { imageFileName: 'C31B_BAK.BMX', paletteFileName: 'C31.PAL' },
+    { imageFileName: 'C31B_GOR.BMX', paletteFileName: 'C31.PAL' },
     { imageFileName: 'C32A_BAK.BMX', paletteFileName: 'C32A.PAL' },
     { imageFileName: 'C32A_WLK.BMX', paletteFileName: 'C32A.PAL' },
     { imageFileName: 'C32B_BAK.BMX', paletteFileName: 'C32B.PAL' },
@@ -128,13 +99,13 @@ const imagePalettePairs = [
     { imageFileName: 'C41B_BAK.BMX', paletteFileName: 'C41B.PAL' },
     { imageFileName: 'C41B_DEL.BMX', paletteFileName: 'C41B.PAL' },
     { imageFileName: 'C41B_GOR.BMX', paletteFileName: 'C41B.PAL' },
-    // { imageFileName: 'C42_PNTR.BMX', paletteFileName: 'C42_.PAL' },
-    // { imageFileName: 'C42_WNDW.BMX', paletteFileName: 'C42_.PAL' },
-    // { imageFileName: 'C51A_BAK.BMX', paletteFileName: 'C51A.PAL' },
-    // { imageFileName: 'C51A_MOR.BMX', paletteFileName: 'C51A.PAL' },
-    // { imageFileName: 'C51A_PTR.BMX', paletteFileName: 'C51A.PAL' },
-    // { imageFileName: 'C51B_BAK.BMX', paletteFileName: 'C51B.PAL' },
-    // { imageFileName: 'C51B_JNL.BMX', paletteFileName: 'C51B.PAL' },
+    { imageFileName: 'C42_PNTR.BMX', paletteFileName: 'C42.PAL' },
+    { imageFileName: 'C42_WNDW.BMX', paletteFileName: 'C42.PAL' },
+    { imageFileName: 'C51A_BAK.BMX', paletteFileName: 'C51.PAL' },
+    { imageFileName: 'C51A_MOR.BMX', paletteFileName: 'C51.PAL' },
+    { imageFileName: 'C51A_PTR.BMX', paletteFileName: 'C51.PAL' },
+    { imageFileName: 'C51B_BAK.BMX', paletteFileName: 'C51.PAL' },
+    { imageFileName: 'C51B_JNL.BMX', paletteFileName: 'C51.PAL' },
     { imageFileName: 'C52A_BAK.BMX', paletteFileName: 'C52A.PAL' },
     { imageFileName: 'C52A_JIM.BMX', paletteFileName: 'C52A.PAL' },
     { imageFileName: 'C52A_MOR.BMX', paletteFileName: 'C52A.PAL' },
@@ -145,7 +116,7 @@ const imagePalettePairs = [
     { imageFileName: 'C61A_CHS.BMX', paletteFileName: 'C61A.PAL' },
     { imageFileName: 'C61A_GAT.BMX', paletteFileName: 'C61A.PAL' },
     { imageFileName: 'C61A_MAK.BMX', paletteFileName: 'C61A.PAL' },
-    { imageFileName: 'C61A_TLK.BMX', paletteFileName: 'C61A.PAL' },
+    { imageFileName: 'C61A_TLK.BMX', paletteFileName: 'C61B.PAL' },
     { imageFileName: 'C61B_BAK.BMX', paletteFileName: 'C61B.PAL' },
     { imageFileName: 'C61B_MAK.BMX', paletteFileName: 'C61B.PAL' },
     { imageFileName: 'C61C_BAK.BMX', paletteFileName: 'C61C.PAL' },
@@ -176,19 +147,19 @@ const imagePalettePairs = [
     { imageFileName: 'C72B_PAT.BMX', paletteFileName: 'C72B.PAL' },
     { imageFileName: 'C72C_BG.BMX', paletteFileName: 'C72C.PAL' },
     { imageFileName: 'C72C_PTY.BMX', paletteFileName: 'C72C.PAL' },
-    // { imageFileName: 'C81.BMX', paletteFileName: 'C81..PAL' },
+    { imageFileName: 'C81.BMX', paletteFileName: 'C81.PAL' },
     { imageFileName: 'C82A.BMX', paletteFileName: 'C82A.PAL' },
     { imageFileName: 'C82A_CEL.BMX', paletteFileName: 'C82A.PAL' },
     { imageFileName: 'C82B.BMX', paletteFileName: 'C82B.PAL' },
     { imageFileName: 'C82B_GOR.BMX', paletteFileName: 'C82B.PAL' },
     { imageFileName: 'C82C.BMX', paletteFileName: 'C82C.PAL' },
     { imageFileName: 'C82C_GAM.BMX', paletteFileName: 'C82C.PAL' },
-    // { imageFileName: 'C91_BG.BMX', paletteFileName: 'C91_.PAL' },
-    // { imageFileName: 'C91_GOR.BMX', paletteFileName: 'C91_.PAL' },
-    // { imageFileName: 'C91_JIM.BMX', paletteFileName: 'C91_.PAL' },
-    // { imageFileName: 'C91_PRTY.BMX', paletteFileName: 'C91_.PAL' },
-    // { imageFileName: 'C91_PUG.BMX', paletteFileName: 'C91_.PAL' },
-    // { imageFileName: 'C92.BMX', paletteFileName: 'C92..PAL' },
+    { imageFileName: 'C91_BG.BMX', paletteFileName: 'C91.PAL' },
+    { imageFileName: 'C91_GOR.BMX', paletteFileName: 'C91_GOR.PAL' },
+    { imageFileName: 'C91_JIM.BMX', paletteFileName: 'C91_JIM.PAL' },
+    { imageFileName: 'C91_PRTY.BMX', paletteFileName: 'C91.PAL' },
+    { imageFileName: 'C91_PUG.BMX', paletteFileName: 'C91_PUG.PAL' },
+    { imageFileName: 'C92.BMX', paletteFileName: 'C92.PAL' },
     { imageFileName: 'C93A.BMX', paletteFileName: 'C93A.PAL' },
     { imageFileName: 'C93A_1.BMX', paletteFileName: 'C93A.PAL' },
     { imageFileName: 'C93B.BMX', paletteFileName: 'C93B.PAL' },
@@ -200,8 +171,9 @@ const imagePalettePairs = [
     { imageFileName: 'C93C_1C.BMX', paletteFileName: 'C93C.PAL' },
     { imageFileName: 'C93D.BMX', paletteFileName: 'C93D.PAL' },
     { imageFileName: 'C93D_1.BMX', paletteFileName: 'C93D.PAL' },
+];
 
-    // Shops
+const shops = [
     { imageFileName: 'SHOP1.BMX', paletteFileName: 'SHOP1.PAL' },
     { imageFileName: 'SHOP1ARM.BMX', paletteFileName: 'SHOP1.PAL' },
     { imageFileName: 'SHOP1BAK.BMX', paletteFileName: 'SHOP1.PAL' },
@@ -212,18 +184,9 @@ const imagePalettePairs = [
     { imageFileName: 'SHOP3ARM.BMX', paletteFileName: 'SHOP3.PAL' },
     { imageFileName: 'SHOP3BAK.BMX', paletteFileName: 'SHOP3.PAL' },
     { imageFileName: 'SHOP4.BMX', paletteFileName: 'SHOP4.PAL' },
-    
-    // SPI
-    
-    // SPL
-    
-    // Temple
-    { imageFileName: 'TEMPLE.BMX', paletteFileName: 'TEMPLE.PAL' },
+];
 
-    // Teleport
-    { imageFileName: 'TELEPORT.BMX', paletteFileName: 'TELEPORT.PAL' },
-    
-    // Taverns
+const taverns = [
     { imageFileName: 'TVRN1.BMX', paletteFileName: 'TVRN1.PAL' },
     { imageFileName: 'TVRN1BAK.BMX', paletteFileName: 'TVRN1.PAL' },
     { imageFileName: 'TVRN1PPL.BMX', paletteFileName: 'TVRN1.PAL' },
@@ -239,8 +202,9 @@ const imagePalettePairs = [
     { imageFileName: 'TVRN5.BMX', paletteFileName: 'TVRN5.PAL' },
     { imageFileName: 'TVRN5BAK.BMX', paletteFileName: 'TVRN5.PAL' },
     { imageFileName: 'TVRN5PPL.BMX', paletteFileName: 'TVRN5.PAL' },
+];
 
-    // Zones
+const zones = [
     { imageFileName: 'Z01H.BMX', paletteFileName: 'Z01.PAL' },
     { imageFileName: 'Z01SLOT0.BMX', paletteFileName: 'Z01.PAL' },
     { imageFileName: 'Z01SLOT1.BMX', paletteFileName: 'Z01.PAL' },
@@ -313,6 +277,61 @@ const imagePalettePairs = [
     { imageFileName: 'Z12SLOT4.BMX', paletteFileName: 'Z12.PAL' },
     { imageFileName: 'Z12SLOT5.BMX', paletteFileName: 'Z12.PAL' },
     { imageFileName: 'Z12SLOT6.BMX', paletteFileName: 'Z12.PAL' },
+]
+
+// a function that write actors in the format {"ACT001", "ACT001.PAL"}, one such per line
+const pairsToCppMap = async (pairs: { imageFileName: string, paletteFileName: string }[]) => {
+    // remove the ones that have the same string before the dot
+    // pairs = pairs.filter((pair) => pair.imageFileName.split('.')[0] !== pair.paletteFileName.split('.')[0]);
+    const result = pairs.map((pair) => `{"${pair.imageFileName}", "${pair.paletteFileName}"},`).join("\n");
+    await Bun.write("~/Desktop/actors2.json", result);
+}
+pairsToCppMap(chapters);
+
+
+const imagePalettePairs = [
+    /////////////////////////////
+    // BMX with known palettes //
+    /////////////////////////////
+
+    // Actors
+    ...actors,
+
+    { imageFileName: 'BICONS1.BMX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'BICONS2.BMX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'CASTFACE.BMX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'COMPASS.BMX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'ENCAMP.BMX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'FMAP_ICN.BMX', paletteFileName: 'FULLMAP.PAL' },
+    { imageFileName: 'HEADS.BMX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'INVLOCK.BMX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'INVMISC.BMX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'INVSHP1.BMX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'INVSHP2.BMX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'POINTERG.BMX', paletteFileName: 'OPTIONS.PAL' },
+
+
+    // Chapters
+    ...chapters,
+
+    // Shops
+    ...shops,
+
+    // SPI
+
+    // SPL
+
+    // Temple
+    { imageFileName: 'TEMPLE.BMX', paletteFileName: 'TEMPLE.PAL' },
+
+    // Teleport
+    { imageFileName: 'TELEPORT.BMX', paletteFileName: 'TELEPORT.PAL' },
+
+    // Taverns
+    ...taverns,
+
+    // Zones
+    ...zones,
 
     ///////////////////////////////
     // BMX with unknown palettes //
@@ -339,7 +358,7 @@ const dumpBmp = ({ imagesFileName, image, palette, index }: DumpBmpParams) => {
         return [color.r, color.g, color.b];
     });
     // console.log({imageWithColors});
-    
+
     // now use BmpWriter to write to file
     const bmp = BmpWriter.createBmpArray(image.width, image.height, Uint8Array.from(imageWithColors));
     Bun.write(`${extractedDataPath}/step2/BMX/${imagesFileName.replace('.BMX', '')}_${index}.BMX.bmp`, bmp);
@@ -349,14 +368,17 @@ const dumpAllBmp = async (cleanFirst: boolean = false) => {
     if (cleanFirst) {
         throw new Error('Not implemented');
     }
-    for (const {imageFileName, paletteFileName} of imagePalettePairs) {
+    for (const { imageFileName, paletteFileName } of imagePalettePairs) {
         const images = await loadImages(imageFileName);
         const palette = await loadPalette(paletteFileName);
 
         images.forEach((image, index) => {
-            dumpBmp({imagesFileName: imageFileName, image, palette, index});
+            dumpBmp({ imagesFileName: imageFileName, image, palette, index });
         });
     }
+    console.log();
+    console.log('Finished!');
+    console.log();
 }
 
 export const experiment = async () => {

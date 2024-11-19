@@ -222,7 +222,7 @@ export class FileBuffer {
       // The code line underneath does not do the same thing!!
       // GetCurrent gets the pointer to the current position in the buffer.
       // const data = result.uint8Array;
-      console.log(`decompressLZSS: result.index: ${result.index}`);
+      // console.log(`decompressLZSS: result.index: ${result.index}`);
       const data = result.uint8Array.subarray(result.index);
       let code = 0;
       let mask = 0;
