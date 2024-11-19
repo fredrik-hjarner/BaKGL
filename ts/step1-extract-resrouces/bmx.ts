@@ -6,26 +6,6 @@ import { extractedDataPath } from '../consts.ts';
 
 // await extractPalettesToJson();
 
-const scxPairs = [
-    { imageFileName: 'BOOK.SCX', paletteFileName: 'BOOK.PAL' },
-    { imageFileName: 'C42.SCX', paletteFileName: 'TELEPORT.PAL' },
-    { imageFileName: 'CAST.SCX', paletteFileName: 'OPTIONS.PAL' },
-    { imageFileName: 'CFRAME.SCX', paletteFileName: 'OPTIONS.PAL' },
-    { imageFileName: 'CONT2.SCX', paletteFileName: 'CONTENTS.PAL' },
-    { imageFileName: 'CONTENTS.SCX', paletteFileName: 'CONTENTS.PAL' },
-    { imageFileName: 'DIALOG.SCX', paletteFileName: 'INVENTOR.PAL' },
-    { imageFileName: 'ENCAMP.SCX', paletteFileName: 'OPTIONS.PAL' },
-    { imageFileName: 'FRAME.SCX', paletteFileName: 'OPTIONS.PAL' },
-    { imageFileName: 'FULLMAP.SCX', paletteFileName: 'FULLMAP.PAL' },
-    { imageFileName: 'INT_BORD.SCX', paletteFileName: 'FULLMAP.PAL' },
-    { imageFileName: 'INVENTOR.SCX', paletteFileName: 'INVENTOR.PAL' },
-    { imageFileName: 'OPTIONS0.SCX', paletteFileName: 'OPTIONS.PAL' },
-    { imageFileName: 'OPTIONS1.SCX', paletteFileName: 'OPTIONS.PAL' },
-    { imageFileName: 'OPTIONS2.SCX', paletteFileName: 'OPTIONS.PAL' },
-    { imageFileName: 'PUZZLE.SCX', paletteFileName: 'PUZZLE.PAL' },
-    { imageFileName: 'RIFTMAP.SCX', paletteFileName: 'OPTIONS.PAL' },
-]
-
 // because there are so many ACT (ACTOR) files, we need a helper to create the pairs.
 const actPairHelper = (actIndex: number, a: boolean = true, onlyA: boolean = false) => {
     const paddedIndex = actIndex.toString().padStart(3, '0');
