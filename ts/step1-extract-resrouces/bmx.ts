@@ -1,8 +1,12 @@
+import fs from 'node:fs';
+import path from 'node:path';
+
 import type { Image } from '../bak/image.ts';
 import { loadImages } from '../bak/imageStore.ts';
 import { BmpWriter } from '../bmp.ts';
 import { loadPalette, type Palette } from './pal.ts';
 import { extractedDataPath } from '../consts.ts';
+import { getAllPalettesNames } from '../bak/palette.ts';
 
 const actors = [
     { imageFileName: "ACT001.BMX", paletteFileName: "ACT001.PAL" },
@@ -296,7 +300,48 @@ const imagePalettePairs = [
     
     // Actors
     ...actors,
-    
+
+    // Not sure its the correct palette
+    // Air (Winged flying guy)
+    { imageFileName: 'AIR1.BMX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'AIR2.BMX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'AIR3.BMX', paletteFileName: 'OPTIONS.PAL' },
+
+    // BRK (Stone golem in first cave)
+    { imageFileName: 'BRK1.BMX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'BRK2.BMX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'BRK3.BMX', paletteFileName: 'OPTIONS.PAL' },
+
+    // Not sure its the correct palette
+    // BSY
+    { imageFileName: 'BSY1.BMX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'BSY2.BMX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'BSY3.BMX', paletteFileName: 'OPTIONS.PAL' },
+
+    // Dog
+    { imageFileName: 'DOG1.BMX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'DOG2.BMX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'DOG3.BMX', paletteFileName: 'OPTIONS.PAL' },
+
+    // Do these also come with a different color on the cape?
+    // Moredhel
+    { imageFileName: 'MOR1.BMX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'MOR2.BMX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'MOR3.BMX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'MOR4.BMX', paletteFileName: 'OPTIONS.PAL' },
+
+    // Ogre
+    { imageFileName: 'OGR1.BMX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'OGR2.BMX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'OGR3.BMX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'OGR4.BMX', paletteFileName: 'OPTIONS.PAL' },
+
+    // Rog
+    { imageFileName: 'ROG1.BMX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'ROG2.BMX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'ROG3.BMX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'ROG4.BMX', paletteFileName: 'OPTIONS.PAL' },
+
     { imageFileName: 'BICONS1.BMX', paletteFileName: 'OPTIONS.PAL' },
     { imageFileName: 'BICONS2.BMX', paletteFileName: 'OPTIONS.PAL' },
     { imageFileName: 'CASTFACE.BMX', paletteFileName: 'OPTIONS.PAL' },
@@ -319,7 +364,7 @@ const imagePalettePairs = [
     // C
     { imageFileName: 'CHAPTER.BMX', paletteFileName: 'CHAPTER.PAL' },
 
-    // G
+    // G_
     { imageFileName: 'G_ARMANG.BMX', paletteFileName: 'G_ARMANG.PAL' },
     { imageFileName: 'G_BKBAR1.BMX', paletteFileName: 'G_BKBAR1.PAL' },
     { imageFileName: 'G_BKBAR2.BMX', paletteFileName: 'G_BKBAR2.PAL' },
@@ -330,7 +375,6 @@ const imagePalettePairs = [
     { imageFileName: "G_BKFALL.BMX", paletteFileName: "G_BKFALL.PAL" },
     { imageFileName: "G_BKFRST.BMX", paletteFileName: "G_BKFRST.PAL" },
     { imageFileName: "G_BKLIBR.BMX", paletteFileName: "G_BKLIBR.PAL" },
-    { imageFileName: "G_BKSEWR.BMX", paletteFileName: "G_BKSEWR.PAL" },
     { imageFileName: "G_BKSEWR.BMX", paletteFileName: "G_BKSEWR.PAL" },
     { imageFileName: "G_BKSTAT.BMX", paletteFileName: "G_BKSTAT.PAL" },
     { imageFileName: "G_BKSTON.BMX", paletteFileName: "G_BKSTON.PAL" },
@@ -354,9 +398,15 @@ const imagePalettePairs = [
     // Shops
     ...shops,
 
-    // SPI
+    // Spider
+    { imageFileName: 'SPI1.BMX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'SPI2.BMX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'SPI3.BMX', paletteFileName: 'OPTIONS.PAL' },
 
-    // SPL
+    // Spellcaster
+    { imageFileName: 'SPL1.BMX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'SPL2.BMX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'SPL3.BMX', paletteFileName: 'OPTIONS.PAL' },
 
     // Temple
     { imageFileName: 'TEMPLE.BMX', paletteFileName: 'TEMPLE.PAL' },
@@ -417,6 +467,48 @@ const dumpAllBmp = async (cleanFirst: boolean = false) => {
     console.log();
 }
 
+const renderBmxWithAllPalettes = async (imageFileName: string) => {
+    // const image = await loadScreenResource(`${extractedDataPath}/${imageFileName}`);
+    const images = await loadImages(imageFileName);
+    const image = images[0];
+
+    const palettePaths = await getAllPalettesNames();
+    const palettes: Palette[] = [];
+    for (const palettePath of palettePaths) {
+        const palette = await loadPalette(palettePath);
+        palettes.push(palette);
+    }
+
+    for (const [i, palette] of palettes.entries()) {
+        dumpBmp({
+            imagesFileName: `${imageFileName}__${palette.fileName}`,
+            image,
+            palette,
+            index: i,
+        });
+    }
+}
+
 export const experiment = async () => {
     await dumpAllBmp(false);
+    // await renderBmxWithAllPalettes('SPL1.BMX');
+}
+
+const getAllAlreadyExtractedBmxNames = (): string[] => {
+    return imagePalettePairs.map((pair) => pair.imageFileName);
+}
+
+export const deleteAllAlreadyExtractedBmx = () => {
+    const names = getAllAlreadyExtractedBmxNames();
+    const folderInWhichToDeleteTheseFiles = extractedDataPath;
+    
+    names.forEach((name) => {
+        const filePath = path.join(folderInWhichToDeleteTheseFiles, name);
+        if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+            console.log(`Deleted file: ${filePath}`);
+        } else {
+            console.log(`File not found: ${filePath}`);
+        }
+    });
 }

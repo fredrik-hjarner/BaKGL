@@ -41,7 +41,16 @@ const imagePalettePairs = [
     { imageFileName: 'Z10L.SCX', paletteFileName: 'Z10.PAL' },
     { imageFileName: 'Z11L.SCX', paletteFileName: 'Z11.PAL' },
     { imageFileName: 'Z12L.SCX', paletteFileName: 'Z12.PAL' },
-]
+];
+
+// a function that write actors in the format {"ACT001", "ACT001.PAL"}, one such per line
+const pairsToCppMap = async (pairs: { imageFileName: string, paletteFileName: string }[]) => {
+    // remove the ones that have the same string before the dot
+    // pairs = pairs.filter((pair) => pair.imageFileName.split('.')[0] !== pair.paletteFileName.split('.')[0]);
+    const result = pairs.map((pair) => `{"${pair.imageFileName}", "${pair.paletteFileName}"},`).join("\n");
+    await Bun.write("~/Desktop/actors2.json", result);
+}
+pairsToCppMap(imagePalettePairs);
 
 type DumpBmpParams = {
     imageFileName: string;
