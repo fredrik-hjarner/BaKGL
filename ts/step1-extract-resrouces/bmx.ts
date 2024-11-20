@@ -293,10 +293,10 @@ const imagePalettePairs = [
     /////////////////////////////
     // BMX with known palettes //
     /////////////////////////////
-
+    
     // Actors
     ...actors,
-
+    
     { imageFileName: 'BICONS1.BMX', paletteFileName: 'OPTIONS.PAL' },
     { imageFileName: 'BICONS2.BMX', paletteFileName: 'OPTIONS.PAL' },
     { imageFileName: 'CASTFACE.BMX', paletteFileName: 'OPTIONS.PAL' },
@@ -309,10 +309,47 @@ const imagePalettePairs = [
     { imageFileName: 'INVSHP1.BMX', paletteFileName: 'OPTIONS.PAL' },
     { imageFileName: 'INVSHP2.BMX', paletteFileName: 'OPTIONS.PAL' },
     { imageFileName: 'POINTERG.BMX', paletteFileName: 'OPTIONS.PAL' },
-
+    
+    // B
+    { imageFileName: 'BOOK.BMX', paletteFileName: 'BOOK.PAL' },
 
     // Chapters
     ...chapters,
+
+    // C
+    { imageFileName: 'CHAPTER.BMX', paletteFileName: 'CHAPTER.PAL' },
+
+    // G
+    { imageFileName: 'G_ARMANG.BMX', paletteFileName: 'G_ARMANG.PAL' },
+    { imageFileName: 'G_BKBAR1.BMX', paletteFileName: 'G_BKBAR1.PAL' },
+    { imageFileName: 'G_BKBAR2.BMX', paletteFileName: 'G_BKBAR2.PAL' },
+    { imageFileName: 'G_BKCAVE.BMX', paletteFileName: 'G_BKCAVE.PAL' },
+    { imageFileName: "G_BKCULL.BMX", paletteFileName: "G_BKCULL.PAL" },
+    { imageFileName: "G_BKDRAG.BMX", paletteFileName: "G_BKDRAG.PAL" },
+    { imageFileName: "G_BKEORT.BMX", paletteFileName: "G_BKEORT.PAL" },
+    { imageFileName: "G_BKFALL.BMX", paletteFileName: "G_BKFALL.PAL" },
+    { imageFileName: "G_BKFRST.BMX", paletteFileName: "G_BKFRST.PAL" },
+    { imageFileName: "G_BKLIBR.BMX", paletteFileName: "G_BKLIBR.PAL" },
+    { imageFileName: "G_BKSEWR.BMX", paletteFileName: "G_BKSEWR.PAL" },
+    { imageFileName: "G_BKSEWR.BMX", paletteFileName: "G_BKSEWR.PAL" },
+    { imageFileName: "G_BKSTAT.BMX", paletteFileName: "G_BKSTAT.PAL" },
+    { imageFileName: "G_BKSTON.BMX", paletteFileName: "G_BKSTON.PAL" },
+    { imageFileName: "G_BKTHRO.BMX", paletteFileName: "G_BKTHRO.PAL" },
+    { imageFileName: "G_BKTMPL.BMX", paletteFileName: "G_BKTMPL.PAL" },
+    { imageFileName: "G_BKTUNL.BMX", paletteFileName: "G_BKTUNL.PAL" },
+    { imageFileName: "G_BKWOOD.BMX", paletteFileName: "G_BKWOOD.PAL" },
+    { imageFileName: "G_CAVALL.BMX", paletteFileName: "G_CAVALL.PAL" },
+    { imageFileName: "G_CHEAM.BMX", paletteFileName: "G_CHEAM.PAL" },
+    { imageFileName: "G_HICAST.BMX", paletteFileName: "G_HICAST.PAL" },
+    { imageFileName: "G_KRONDO.BMX", paletteFileName: "G_KRONDO.PAL" },
+    { imageFileName: "G_LAMUT.BMX", paletteFileName: "G_LAMUT.PAL" },
+    { imageFileName: "G_LAMUT2.BMX", paletteFileName: "G_LAMUT2.PAL" },
+    { imageFileName: "G_MALACS.BMX", paletteFileName: "G_MALACS.PAL" },
+    { imageFileName: "G_NORTHW.BMX", paletteFileName: "G_NORTHW.PAL" },
+    { imageFileName: "G_ROMNEY.BMX", paletteFileName: "G_ROMNEY.PAL" },
+    { imageFileName: "G_SARSAR.BMX", paletteFileName: "G_SARSAR.PAL" },
+    { imageFileName: "G_SARTH.BMX", paletteFileName: "G_SARTH.PAL" },
+    { imageFileName: "G_SETHAN.BMX", paletteFileName: "G_SETHAN.PAL" },
 
     // Shops
     ...shops,
@@ -337,7 +374,6 @@ const imagePalettePairs = [
     // BMX with unknown palettes //
     ///////////////////////////////
 
-    { imageFileName: 'BOOK.BMX', paletteFileName: 'BOOK.PAL' }, // book must have book palette, right?
     { imageFileName: 'BOOM.BMX', paletteFileName: 'OPTIONS.PAL' },
     { imageFileName: 'BRK1.BMX', paletteFileName: 'OPTIONS.PAL' },
     { imageFileName: 'BRK2.BMX', paletteFileName: 'OPTIONS.PAL' },

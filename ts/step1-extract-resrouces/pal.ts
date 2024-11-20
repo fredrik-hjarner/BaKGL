@@ -11,6 +11,7 @@ type Color = {
 };
 
 export type Palette = {
+  fileName: string;
   colors: Color[];
 };
 

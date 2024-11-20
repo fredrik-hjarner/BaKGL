@@ -3,31 +3,44 @@ import { loadScreenResource } from '../bak/screen.ts';
 import { BmpWriter } from '../bmp.ts';
 import { loadPalette, type Palette } from './pal.ts';
 import { extractedDataPath } from '../consts.ts';
-
-// await extractPalettesToJson();
+import { getAllPalettesNames } from '../bak/palette.ts';
 
 const imagePalettePairs = [
-    /////////////////////////////
-    // SCX with known palettes //
-    /////////////////////////////
+    { imageFileName: 'BLANK.SCX', paletteFileName: 'INT_MENU.PAL' },
     { imageFileName: 'BOOK.SCX', paletteFileName: 'BOOK.PAL' },
+    { imageFileName: 'C11.SCX', paletteFileName: 'C11A.PAL' },
     { imageFileName: 'C42.SCX', paletteFileName: 'TELEPORT.PAL' },
     { imageFileName: 'CAST.SCX', paletteFileName: 'OPTIONS.PAL' },
     { imageFileName: 'CFRAME.SCX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'CHAPTER.SCX', paletteFileName: 'CHAPTER.PAL' },
     { imageFileName: 'CONT2.SCX', paletteFileName: 'CONTENTS.PAL' },
     { imageFileName: 'CONTENTS.SCX', paletteFileName: 'CONTENTS.PAL' },
+    { imageFileName: 'CREDITS.SCX', paletteFileName: 'CREDITS.PAL' },
     { imageFileName: 'DIALOG.SCX', paletteFileName: 'INVENTOR.PAL' },
     { imageFileName: 'ENCAMP.SCX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'FCOMBAT.SCX', paletteFileName: 'OPTIONS.PAL' },
     { imageFileName: 'FRAME.SCX', paletteFileName: 'OPTIONS.PAL' },
     { imageFileName: 'FULLMAP.SCX', paletteFileName: 'FULLMAP.PAL' },
-    // INT_BORD look weird.
-    { imageFileName: 'INT_BORD.SCX', paletteFileName: 'FULLMAP.PAL' },
+    { imageFileName: 'INT_BORD.SCX', paletteFileName: 'INT_DYN.PAL' },
+    { imageFileName: 'INT_MENU.SCX', paletteFileName: 'INT_MENU.PAL' },
     { imageFileName: 'INVENTOR.SCX', paletteFileName: 'INVENTOR.PAL' },
     { imageFileName: 'OPTIONS0.SCX', paletteFileName: 'OPTIONS.PAL' },
     { imageFileName: 'OPTIONS1.SCX', paletteFileName: 'OPTIONS.PAL' },
     { imageFileName: 'OPTIONS2.SCX', paletteFileName: 'OPTIONS.PAL' },
     { imageFileName: 'PUZZLE.SCX', paletteFileName: 'PUZZLE.PAL' },
     { imageFileName: 'RIFTMAP.SCX', paletteFileName: 'OPTIONS.PAL' },
+    { imageFileName: 'Z01L.SCX', paletteFileName: 'Z01.PAL' },
+    { imageFileName: 'Z02L.SCX', paletteFileName: 'Z02.PAL' },
+    { imageFileName: 'Z03L.SCX', paletteFileName: 'Z03.PAL' },
+    { imageFileName: 'Z04L.SCX', paletteFileName: 'Z04.PAL' },
+    { imageFileName: 'Z05L.SCX', paletteFileName: 'Z05.PAL' },
+    { imageFileName: 'Z06L.SCX', paletteFileName: 'Z06.PAL' },
+    { imageFileName: 'Z07L.SCX', paletteFileName: 'Z07.PAL' },
+    { imageFileName: 'Z08L.SCX', paletteFileName: 'Z08.PAL' },
+    { imageFileName: 'Z09L.SCX', paletteFileName: 'Z09.PAL' },
+    { imageFileName: 'Z10L.SCX', paletteFileName: 'Z10.PAL' },
+    { imageFileName: 'Z11L.SCX', paletteFileName: 'Z11.PAL' },
+    { imageFileName: 'Z12L.SCX', paletteFileName: 'Z12.PAL' },
 ]
 
 type DumpBmpParams = {
@@ -60,6 +73,22 @@ const dumpAllBmp = async (cleanFirst: boolean = false) => {
     }
 }
 
+const renderScxWithAllPalettes = async (imageFileName: string) => {
+    const image = await loadScreenResource(`${extractedDataPath}/${imageFileName}`);
+
+    const palettePaths = await getAllPalettesNames();
+    const palettes: Palette[] = [];
+    for (const palettePath of palettePaths) {
+        const palette = await loadPalette(palettePath);
+        palettes.push(palette);
+    }
+
+    for (const [i, palette] of palettes.entries()) {
+        dumpBmp({ imageFileName: `${imageFileName}__${palette.fileName}`, image, palette });
+    }
+}
+
 export const experimentScx = async () => {
     await dumpAllBmp(false);
+    // await renderScxWithAllPalettes('INT_MENU.SCX');
 }

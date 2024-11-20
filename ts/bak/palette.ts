@@ -39,9 +39,11 @@ export class ColorSwap {
 
 export class Palette {
   private colors: Color[];
+  public fileName: string;
 
-  private constructor(colors: Color[]) {
+  private constructor(colors: Color[], fileName: string) {
     this.colors = colors;
+    this.fileName = fileName;
   }
 
   public static async createFromFile(filename: string): Promise<Palette> {
@@ -72,7 +74,7 @@ export class Palette {
       colors.push({ r, g, b, a });
     }
 
-    return new Palette(colors);
+    return new Palette(colors, filename.split('/').pop()!);
   }
 
   public static async createFromPalette(pal: Palette, cs: ColorSwap): Promise<Palette> {
@@ -82,7 +84,7 @@ export class Palette {
       colors.push(cs.getColor(i, pal));
     }
 
-    return new Palette(colors);
+    return new Palette(colors, pal.fileName);
   }
 
   public getColor(i: number): Color {
@@ -113,4 +115,11 @@ export async function extractPalettesToJson(): Promise<void> {
     console.log(`extractPalettesToJson: jsonFilePath: ${JSON.stringify(jsonFilePath, null, 2)}`);
     await Bun.write(jsonFilePath, JSON.stringify(palette, null, 2));
   }
+}
+
+export async function getAllPalettesNames(): Promise<string[]> {
+  const allFiles = await readdir(extractedDataPath);
+  const palFilePaths = allFiles
+    .filter(file => file.toLowerCase().endsWith('.pal'));
+  return palFilePaths;
 }
